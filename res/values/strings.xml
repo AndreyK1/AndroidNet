@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">AndroidNet</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="users">
+        <item>Andrey</item>
+        <item>Dima</item>
+        <item>Vasya</item>
+        <item>Yasha</item>
+        <item>Gosha</item>
+    </string-array>
+</resources>
