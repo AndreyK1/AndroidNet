@@ -1,6 +1,7 @@
 package com.example.kirilyuk.androidnet;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -55,10 +56,20 @@ public class MainActivity extends ActionBarActivity {
     ListView UsersList;
     PlaceholderFragment myFragment;
     Button BtnSendFrag;
+    Button BtnAddUsers;
+
+    UserListAdapter useLadapter;
+    ArrayList<ArrayList<String>> UsersArrays = new ArrayList<ArrayList<String>>();
+    //String[] emailsArr;
+
+
     int cnt=0;
+    Context context1;
     String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
             "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
             "Linux", "OS/2" };
+    int pageSize = 10;
+    int SkipUsers = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,17 +82,17 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, myFragment)
                     .commit();
         }
-
+        context1 = this;
         BtnSendFrag = (Button) findViewById(R.id.button);
+        BtnAddUsers = (Button)findViewById(R.id.butAddUser);
 
 
-
-        BtnSendFrag.setOnClickListener(new View.OnClickListener(){
+        BtnSendFrag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 //тестовая картинка
 
-       //         profile_photo.setImageBitmap(getImageBitmap("http://192.168.123.168/img/no.jpg"));
+                //         profile_photo.setImageBitmap(getImageBitmap("http://192.168.123.168/img/no.jpg"));
                /* URL urlObjp = null;
                 try {
                     urlObjp = new URL("http://192.168.123.168/img/no.jpg");
@@ -96,37 +107,13 @@ public class MainActivity extends ActionBarActivity {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }*/
-              //  profile_photo.setImageDrawable();
+                //  profile_photo.setImageDrawable();
 
                 profile_photo = (ImageView) findViewById(R.id.imageTest);
-                AsyncTask<URL, Void, Boolean> asyncTask1 = new AsyncTask<URL, Void, Boolean>() {
-                    public Bitmap mIcon_val;
-                    public IOException error;
 
-                    @Override
-                    protected Boolean doInBackground(URL... params) {
-                        try {
-                            mIcon_val = BitmapFactory.decodeStream(params[0].openConnection().getInputStream());
-                        } catch (IOException e) {
-                            this.error = e;
-                            return false;
-                        }
-                        return true;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Boolean success) {
-                        super.onPostExecute(success);
-                        if (success) {
-                            profile_photo.setImageBitmap(mIcon_val);
-                        } else {
-                            //profile_photo.setImageBitmap(defaultImage);
-                        }
-                    }
-                };
-
+                AsyncTask<URL, Void, Boolean> asyncTask1 = new PutFototAsyncTask((MainActivity) context1);
                 try {
-                   // URL url = new URL("http://192.168.123.168/img/no.jpg");
+                    // URL url = new URL("http://192.168.123.168/img/no.jpg");
                     URL url = new URL("http://192.168.123.168/img/no.jpg");
                     asyncTask1.execute(url);
                 } catch (MalformedURLException e) {
@@ -134,29 +121,26 @@ public class MainActivity extends ActionBarActivity {
                 }
 
 
-
-
-
                 tV = (TextView) findViewById(R.id.tV);
                 cnt++;
-                tV.setText("new Text-"+String.valueOf(cnt));
+                tV.setText("new Text-" + String.valueOf(cnt));
                 try {
-                    tV.setText(tV.getText().toString()+ " Text ");
-                  //   String searchURL = "http://search.twitter.com/search.json?q=cats";
-                  //  String searchURL = "http://stackoverflow.com/questions/33059933/package-org-apache-http-client-does-not-exist";
+                    tV.setText(tV.getText().toString() + " Text ");
+                    //   String searchURL = "http://search.twitter.com/search.json?q=cats";
+                    //  String searchURL = "http://stackoverflow.com/questions/33059933/package-org-apache-http-client-does-not-exist";
                     //String searchURL ="http://192.168.123.168/#/PageUsers/1";
-                    String searchURL ="http://192.168.123.168/AllUsers/5/15";
-                   // String searchURL ="http://www.boogle1.ru/";
+                    String searchURL = "http://192.168.123.168/AllUsers/" + SkipUsers + "/" + pageSize;
 
-               /* LoginAsync la = new LoginAsync();/AllUsers/5/15
-                la.execute(username, password);
-    */
-                     AsyncTask<String, Void, String> execute = new GetUsersTask().execute(searchURL);
+                    //AsyncTask<String, Void, String> execute = new GetUsersTask().execute(searchURL);
+                    AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) context1,useLadapter,UsersArrays).execute(searchURL);
                 } catch (Exception e) {
                     tV.setText("Whoops - something went wrong!");
                     e.printStackTrace();
                 }
             }
+
+            //BtnAddUsers
+
 /*
             private Bitmap getImageBitmap(String url) {
                 Log.v("Bitmap", "here1");
@@ -178,6 +162,45 @@ public class MainActivity extends ActionBarActivity {
             */
         });
 
+
+        BtnAddUsers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+              /* for ( ArrayList<String> ar:UsersArrays){
+
+               }*/
+                UsersArrays.get(0).add("ytrtr");
+                UsersArrays.get(1).add("gyiyuiy");
+                UsersArrays.get(2).add("null");
+
+                String[] emailsArr = new String[UsersArrays.get(0).size()];
+                emailsArr =  UsersArrays.get(0).toArray(emailsArr);
+
+                String[] passesArr = new String[UsersArrays.get(1).size()];
+                passesArr =  UsersArrays.get(1).toArray(passesArr);
+
+                String[] fotosArr = new String[UsersArrays.get(2).size()];
+                fotosArr =  UsersArrays.get(2).toArray(fotosArr);
+
+
+
+               // useLadapter.notifyDataSetChanged();
+
+                ListView UsersList1 = (ListView) findViewById(R.id.listView);
+                useLadapter = new UserListAdapter((MainActivity) context1, emailsArr, passesArr,fotosArr);
+                UsersList1.setAdapter(useLadapter);
+
+
+
+                /*for (String a[]:UsersArrays){
+                    /*for (String b:a){
+                       System.out.println(b);
+
+                    }*/
+                 //   a.add("foto");
+             //   }
+            }
+          });
     }
 
 
@@ -240,204 +263,6 @@ public class MainActivity extends ActionBarActivity {
             return rootView;
         }
     }
-
-
-    private class GetUsersTask extends AsyncTask<String, Void, String> {
-
-        // TextView tV;
-        String charset = "UTF-8";
-        Dialog loadingDialog;
-
-        @Override
-        protected String doInBackground(String... sURL) {
-            // tV = (TextView) findViewById(R.id.tV);
-           /*
-            StringBuilder UsersFeedBuilder = new StringBuilder();
-            for (String searchURL : sURL) {
-                HttpClient tweetClient = new DefaultHttpClient();
-
-                try {
-                    HttpGet tweetGet = new HttpGet(searchURL);
-                    HttpResponse tweetResponse = tweetClient.execute(tweetGet);
-                    StatusLine searchStatus = tweetResponse.getStatusLine();
-                    if (searchStatus.getStatusCode() == 200) {
-                        HttpEntity tweetEntity = tweetResponse.getEntity();
-                        InputStream tweetContent = tweetEntity.getContent();
-
-                        InputStreamReader tweetInput = new InputStreamReader(
-                                tweetContent);
-                        BufferedReader tweetReader = new BufferedReader(
-                                tweetInput);
-                        String lineIn;
-                        while ((lineIn = tweetReader.readLine()) != null) {
-                            UsersFeedBuilder.append(lineIn);
-                        }
-                    } else {
-                        tV.setText("Whoops - something went wrong!");
-                    }
-                } catch (Exception e) {
-                   // tweetDisplay.setText("Whoops - something went wrong!");
-                    e.printStackTrace();
-                }
-            }
-            return UsersFeedBuilder.toString();
-            */
-            StringBuilder sbParams = new StringBuilder();
-            URL urlObj = null;
-            HttpURLConnection conn = null;
-            StringBuilder result = new StringBuilder();
-            Log.v("My Project conn.error","try" );
-
-            try {
-
-                urlObj = new URL(sURL[0]);
-                conn = (HttpURLConnection) urlObj.openConnection();
-         //       conn.setDoOutput(true);
-
-                conn.setRequestMethod("GET");
-
-                conn.setRequestProperty("Accept-Charset", charset);
-
-                conn.setReadTimeout(10000);
-                conn.setConnectTimeout(15000);
-
-                conn.connect();
-
-               int code = conn.getResponseCode();
-                Log.v("My Project conn.error",String.valueOf(code) );
-
-
-
-                String paramsString = sbParams.toString();
-
-                DataOutputStream wr;
-                wr = new DataOutputStream(conn.getOutputStream());
-                wr.writeBytes(paramsString);
-                wr.flush();
-                wr.close();
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                //response from the server
-                InputStream in = new BufferedInputStream(conn.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-
-                Log.v("My Project conn.reader",String.valueOf(reader) );
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            conn.disconnect();
-
-            return result.toString();
-
-
-            //return null;
-        }
-
-
-        protected void onPostExecute(String result) {
-
-            Log.v("My Project onPostExecute.result",String.valueOf(result) );
-           /*
-            StringBuilder tweetResultBuilder = new StringBuilder();
-
-            try {
-                JSONObject resultObject = new JSONObject(result);
-                JSONArray tweetArray = resultObject.getJSONArray("results");
-
-                for (int t = 0; t < tweetArray.length(); t++) {
-                    JSONObject tweetObject = tweetArray.getJSONObject(t);
-                    tweetResultBuilder.append(tweetObject
-                            .getString("from_user") + ": ");
-                    tweetResultBuilder.append(tweetObject.get("text") + "\n\n");
-                }
-            } catch (Exception e) {
-               // tweetDisplay.setText("Whoops - something went wrong!");
-                e.printStackTrace();
-            }
-
-
-            if (tweetResultBuilder.length() > 0)
-                tV.setText(tweetResultBuilder.toString());
-            else
-                tV.setText("Sorry - no tweets found for your search!");
-
-        }*/
-
-            StringBuilder tweetResultBuilder = new StringBuilder();
-            ArrayList<String> emails = new ArrayList<String>();
-
-            try {
-                ArrayList<HashMap<String, String>> oslist = new ArrayList<HashMap<String, String>>();
-
-
-                JSONObject resultObject = new JSONObject(result);
-                JSONArray tweetArray = resultObject.getJSONArray("data");
-                for (int t = 0; t < tweetArray.length(); t++) {
-
-
-                    JSONObject tweetObject = tweetArray.getJSONObject(t);
-                    Log.v("My Project onPostExecute.result",String.valueOf(tweetObject.get("email")) );
-                    tweetResultBuilder.append(tweetObject
-                            .getString("password") + ": ");
-                    tweetResultBuilder.append(tweetObject.get("email") + "\n\n");
-             //       emails.add(String.valueOf(tweetObject.get("email")));
-
-                    HashMap<String, String> map = new HashMap<String, String>();
-                    map.put("email", String.valueOf(tweetObject.get("email")));
-                    map.put("pass", String.valueOf(tweetObject.get("password")));
-                    oslist.add(map);
-                    //values[]=
-                }
-
-
-                ListAdapter adapter = new SimpleAdapter(getApplicationContext(), oslist,
-                        R.layout.list_users,
-                        new String[] { "email","pass" }, new int[] {
-                        R.id.email,R.id.pass});
-
-             //   list.setAdapter(adapter);
-
-               // if(tweetArray.length()>0){
-
-                ListView UsersList1 = (ListView) findViewById(R.id.listView);
-                UsersList1.setAdapter(adapter);
-
-    /*
-    //                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
-    //                      android.R.layout.simple_list_item_1, emails);
-                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
-                                      R.layout.list_users, R.id.email, emails);
-
-                    UsersList1.setAdapter(adapter);*/
-
-                //}
-            } catch (Exception e) {
-                // tweetDisplay.setText("Whoops - something went wrong!");
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-
-
-
-
 
 
 }

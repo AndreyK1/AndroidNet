@@ -15,11 +15,24 @@
         android:id="@+id/button"
         android:layout_gravity="left|top" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Button"
+        android:id="@+id/butAddUser"
+        android:layout_gravity="right|top"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listView3"
-        android:layout_gravity="center_horizontal|top" />
+        android:layout_gravity="center_horizontal|top"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/imageTest"
+        android:layout_toEndOf="@+id/imageTest" />
 
     <FrameLayout
         android:layout_width="fill_parent"
