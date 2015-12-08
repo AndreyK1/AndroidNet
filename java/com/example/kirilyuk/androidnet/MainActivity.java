@@ -169,10 +169,21 @@ public class MainActivity extends ActionBarActivity {
               /* for ( ArrayList<String> ar:UsersArrays){
 
                }*/
+/*
+
                 UsersArrays.get(0).add("ytrtr");
                 UsersArrays.get(1).add("gyiyuiy");
+                UsersArrays.get(2).add("55.jpg");
+
+                UsersArrays.get(0).add("ytrtr1");
+                UsersArrays.get(1).add("null");
                 UsersArrays.get(2).add("null");
 
+                UsersArrays.get(0).add("null");
+                UsersArrays.get(1).add("null");
+                UsersArrays.get(2).add("48.jpg");*/
+/*до 07 12 2015*/
+                /*
                 String[] emailsArr = new String[UsersArrays.get(0).size()];
                 emailsArr =  UsersArrays.get(0).toArray(emailsArr);
 
@@ -181,14 +192,34 @@ public class MainActivity extends ActionBarActivity {
 
                 String[] fotosArr = new String[UsersArrays.get(2).size()];
                 fotosArr =  UsersArrays.get(2).toArray(fotosArr);
+*/
 
+                ArrayList<String> us = new ArrayList<String>();
+                us.add("nnnnnnn");
+                us.add("null");
+                us.add("null");
+                UsersArrays.add(us);
 
+                ArrayList<String> us1 = new ArrayList<String>();
+                us1.add("4888888");
+                us1.add("not null");
+                us1.add("48.jpg");
+                UsersArrays.add(us1);
+                ArrayList<String> us2 = new ArrayList<String>();
+                us2.add("55555");
+                us2.add("not null");
+                us2.add("55.jpg");
+                UsersArrays.add(us2);
+
+                //ListView UsersList1 = (ListView) context.findViewById(R.id.listView);
+               // ((ListView)findViewById(R.id.conv_list)).getAdapter().notifyDataSetChanged();
+                ((UserListAdapter) ((ListView)findViewById(R.id.listView)).getAdapter()).notifyDataSetChanged();
 
                // useLadapter.notifyDataSetChanged();
-
-                ListView UsersList1 = (ListView) findViewById(R.id.listView);
-                useLadapter = new UserListAdapter((MainActivity) context1, emailsArr, passesArr,fotosArr);
-                UsersList1.setAdapter(useLadapter);
+/**/
+            //    ListView UsersList1 = (ListView) findViewById(R.id.listView);
+              //  useLadapter = new UserListAdapter((MainActivity) context1, UsersArrays.get(0), UsersArrays.get(1),UsersArrays.get(2));
+            //    UsersList1.setAdapter(useLadapter);
 
 
 

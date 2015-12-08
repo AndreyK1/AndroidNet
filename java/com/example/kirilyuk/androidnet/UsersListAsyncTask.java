@@ -34,7 +34,7 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
         Dialog loadingDialog;
         String result1;
         public MainActivity context;
-        UserListAdapter useLadapter;
+       UserListAdapter useLadapter;
          ArrayList<ArrayList<String>> UsersArrays = new ArrayList<ArrayList<String>>();
 
         public UsersListAsyncTask(MainActivity a,UserListAdapter useLadapter,ArrayList<ArrayList<String>> UsersArrays)
@@ -178,10 +178,11 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
         }*/
 
             StringBuilder tweetResultBuilder = new StringBuilder();
+/* 08 12 15
             ArrayList<String> emails = new ArrayList<String>();
             ArrayList<String> passes = new ArrayList<String>();
             ArrayList<String> fotos = new ArrayList<String>();
-
+*/
             try {
               //  ArrayList<HashMap<String, String>> uslist = new ArrayList<HashMap<String, String>>();
 
@@ -205,10 +206,17 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
                     //values[]=
 */
                     /* 02 12 15*/
-                    JSONObject tweetObject = tweetArray.getJSONObject(t);
+                 JSONObject tweetObject = tweetArray.getJSONObject(t);
+  /* 08 12 15
                     emails.add(String.valueOf(tweetObject.get("id")+" - "+String.valueOf(tweetObject.get("email"))));
                     passes.add(String.valueOf(tweetObject.get("foto")));
                     fotos.add(String.valueOf(tweetObject.get("foto")));
+ */
+                    ArrayList<String> us = new ArrayList<String>();
+                    us.add(String.valueOf(tweetObject.get("id")+" - "+String.valueOf(tweetObject.get("email"))));
+                    us.add(String.valueOf(tweetObject.get("foto")));
+                    us.add(String.valueOf(tweetObject.get("foto")));
+                    UsersArrays.add(us);
                 }
 
 /* 02 12 15
@@ -222,12 +230,13 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
 */
 
                 /* 02 12 15*/
-
+  /* 08 12 15
                 UsersArrays.add(emails);
                 UsersArrays.add(passes);
                 UsersArrays.add(passes);
+*/
 
-
+/*до 07 12 15
                 String[] emailsArr = new String[emails.size()];
                 emailsArr = emails.toArray(emailsArr);
 
@@ -236,11 +245,13 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
 
                 String[] fotosArr = new String[fotos.size()];
                 fotosArr = passes.toArray(fotosArr);
-
+*/
 
 
                 ListView UsersList1 = (ListView) context.findViewById(R.id.listView);
-                useLadapter = new UserListAdapter((MainActivity) context, emailsArr, passesArr,fotosArr);
+                //useLadapter = new UserListAdapter((MainActivity) context, emailsArr, passesArr,fotosArr);
+               // useLadapter = new UserListAdapter((MainActivity) context, emails, passes,passes);
+                useLadapter = new UserListAdapter((MainActivity) context, R.layout.list_users, UsersArrays);
                 UsersList1.setAdapter(useLadapter);
 
 
