@@ -1,6 +1,7 @@
 package com.example.kirilyuk.androidnet;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,9 +17,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -57,7 +62,7 @@ public class MainActivity extends ActionBarActivity {
     PlaceholderFragment myFragment;
     Button BtnSendFrag;
     Button BtnAddUsers;
-
+    ProgressDialog pDialog;
     UserListAdapter useLadapter;
     ArrayList<ArrayList<String>> UsersArrays = new ArrayList<ArrayList<String>>();
     //String[] emailsArr;
@@ -87,28 +92,15 @@ public class MainActivity extends ActionBarActivity {
         BtnAddUsers = (Button)findViewById(R.id.butAddUser);
 
 
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Please wait..");
+        pDialog.setIndeterminate(true);
+        pDialog.setCancelable(true);
+
         BtnSendFrag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 //тестовая картинка
-
-                //         profile_photo.setImageBitmap(getImageBitmap("http://192.168.123.168/img/no.jpg"));
-               /* URL urlObjp = null;
-                try {
-                    urlObjp = new URL("http://192.168.123.168/img/no.jpg");
-                   // URL urlObjp = new URL("http://192.168.123.168/img/no.jpg");
-                    Bitmap mIcon_val = null;
-                    try {
-                        mIcon_val = BitmapFactory.decodeStream(urlObjp.openConnection().getInputStream());
-                        profile_photo.setImageBitmap(mIcon_val);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }*/
-                //  profile_photo.setImageDrawable();
-
                 profile_photo = (ImageView) findViewById(R.id.imageTest);
 
                 AsyncTask<URL, Void, Boolean> asyncTask1 = new PutFototAsyncTask((MainActivity) context1);
@@ -119,6 +111,39 @@ public class MainActivity extends ActionBarActivity {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
+
+
+
+                UsersList = (ListView) findViewById(R.id.listView);
+                LayoutInflater layoutInflater = (LayoutInflater) context1.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                // LayoutInflater layoutInflater = inflater.inflate(R.layout.list_users, parent, false);
+                // inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+/*
+                final LinearLayout mLoadingFooter;
+                mLoadingFooter = (LinearLayout) layoutInflater.inflate(R.layout.loading_footer,null );
+                mLoadingFooter.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.FILL_PARENT, ListView.LayoutParams.WRAP_CONTENT));
+                UsersList.addFooterView(mLoadingFooter);
+ */
+              //  ((UserListAdapter)((BaseAdapter)((ListView)findViewById(R.id.listView)).getAdapter()))
+
+                // mList.addFooterView(mLoadingFooter);
+                //http://habrahabr.ru/post/130319/
+
+
+                UsersList.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+                    @Override
+                    public void onScrollStateChanged(AbsListView arg0, int arg1) {}
+
+                    @Override
+                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+ //                       UsersList.removeFooterView((LinearLayout) mLoadingFooter);
+                        if (visibleItemCount > 0 && firstVisibleItem + visibleItemCount == totalItemCount) {
+
+                            loadNextPageUsers();
+                        }
+                    }
+                });
 
 
                 tV = (TextView) findViewById(R.id.tV);
@@ -137,9 +162,11 @@ public class MainActivity extends ActionBarActivity {
                     tV.setText("Whoops - something went wrong!");
                     e.printStackTrace();
                 }
-            }
 
-            //BtnAddUsers
+
+
+
+            }
 
 /*
             private Bitmap getImageBitmap(String url) {
@@ -166,72 +193,68 @@ public class MainActivity extends ActionBarActivity {
         BtnAddUsers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-              /* for ( ArrayList<String> ar:UsersArrays){
-
-               }*/
-/*
-
-                UsersArrays.get(0).add("ytrtr");
-                UsersArrays.get(1).add("gyiyuiy");
-                UsersArrays.get(2).add("55.jpg");
-
-                UsersArrays.get(0).add("ytrtr1");
-                UsersArrays.get(1).add("null");
-                UsersArrays.get(2).add("null");
-
-                UsersArrays.get(0).add("null");
-                UsersArrays.get(1).add("null");
-                UsersArrays.get(2).add("48.jpg");*/
-/*до 07 12 2015*/
-                /*
-                String[] emailsArr = new String[UsersArrays.get(0).size()];
-                emailsArr =  UsersArrays.get(0).toArray(emailsArr);
-
-                String[] passesArr = new String[UsersArrays.get(1).size()];
-                passesArr =  UsersArrays.get(1).toArray(passesArr);
-
-                String[] fotosArr = new String[UsersArrays.get(2).size()];
-                fotosArr =  UsersArrays.get(2).toArray(fotosArr);
-*/
-
-                ArrayList<String> us = new ArrayList<String>();
-                us.add("nnnnnnn");
-                us.add("null");
-                us.add("null");
-                UsersArrays.add(us);
-
-                ArrayList<String> us1 = new ArrayList<String>();
-                us1.add("4888888");
-                us1.add("not null");
-                us1.add("48.jpg");
-                UsersArrays.add(us1);
-                ArrayList<String> us2 = new ArrayList<String>();
-                us2.add("55555");
-                us2.add("not null");
-                us2.add("55.jpg");
-                UsersArrays.add(us2);
-
-                //ListView UsersList1 = (ListView) context.findViewById(R.id.listView);
-               // ((ListView)findViewById(R.id.conv_list)).getAdapter().notifyDataSetChanged();
-                ((UserListAdapter) ((ListView)findViewById(R.id.listView)).getAdapter()).notifyDataSetChanged();
-
-               // useLadapter.notifyDataSetChanged();
-/**/
-            //    ListView UsersList1 = (ListView) findViewById(R.id.listView);
-              //  useLadapter = new UserListAdapter((MainActivity) context1, UsersArrays.get(0), UsersArrays.get(1),UsersArrays.get(2));
-            //    UsersList1.setAdapter(useLadapter);
-
-
-
-                /*for (String a[]:UsersArrays){
-                    /*for (String b:a){
-                       System.out.println(b);
-
-                    }*/
-                 //   a.add("foto");
-             //   }
+               // loadNextPageUsers(mLoadingFooter);
+               // UsersList.removeFooterView((LinearLayout) mLoadingFooter);
             }
           });
+
+/*
+        UsersList.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView arg0, int arg1) {}
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (visibleItemCount > 0 && firstVisibleItem + visibleItemCount == totalItemCount) {
+                    loadNextPageUsers();
+                }
+            }
+        });
+*/
+
+    }
+
+
+    public void loadNextPageUsers(){
+
+
+        pDialog.show();
+
+
+
+
+        ArrayList<String> us = new ArrayList<String>();
+        us.add("nnnnnnn");
+        us.add("null");
+        us.add("null");
+        UsersArrays.add(us);
+
+        ArrayList<String> us1 = new ArrayList<String>();
+        us1.add("4888888");
+        us1.add("not null");
+        us1.add("48.jpg");
+        UsersArrays.add(us1);
+        ArrayList<String> us2 = new ArrayList<String>();
+        us2.add("55555");
+        us2.add("not null1111");
+        us2.add("55.jpg");
+        UsersArrays.add(us2);
+        ArrayList<String> us3 = new ArrayList<String>();
+        us3.add("55555");
+        us3.add("not null1111");
+        us3.add("null");
+        UsersArrays.add(us3);
+        ArrayList<String> us4 = new ArrayList<String>();
+        us4.add("55555");
+        us4.add("not null1111");
+        us4.add("null");
+        UsersArrays.add(us4);
+       // UsersList.removeFooterView(mLoadingFooter);
+     //   ((YourAdapter)((HeaderViewListAdapter)
+ //       ((UserListAdapter) ((ListView)findViewById(R.id.listView)).getAdapter()).notifyDataSetChanged();
+        ((UserListAdapter)((BaseAdapter)((ListView)findViewById(R.id.listView)).getAdapter())).notifyDataSetChanged();
+        pDialog.dismiss();
     }
 
 
@@ -271,8 +294,6 @@ public class MainActivity extends ActionBarActivity {
         }
 
         TextView tV;
-       // ListView UsersList;
-
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -280,17 +301,7 @@ public class MainActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
             //items = getActivity().getResources().getStringArray(R.array.test);
-
             tV = (TextView) rootView.findViewById(R.id.tV);
-/*
-            UsersList = (ListView) rootView.findViewById(R.id.listView);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),
-                    android.R.layout.simple_list_item_1, values);
-            // UsersList.setAdapter(adapter);
-            //; setListAdapter(adapter);
-*/
-
-
             return rootView;
         }
     }

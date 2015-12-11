@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -42,6 +43,11 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
             this.context = a;
             this.useLadapter = useLadapter;
             this.UsersArrays = UsersArrays;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            context.pDialog.show();
         }
 
         @Override
@@ -252,7 +258,10 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
                 //useLadapter = new UserListAdapter((MainActivity) context, emailsArr, passesArr,fotosArr);
                // useLadapter = new UserListAdapter((MainActivity) context, emails, passes,passes);
                 useLadapter = new UserListAdapter((MainActivity) context, R.layout.list_users, UsersArrays);
-                UsersList1.setAdapter(useLadapter);
+      //          UsersList1.setAdapter(useLadapter);
+                UsersList1.setAdapter((UserListAdapter)((BaseAdapter) useLadapter));
+                //(UserListAdapter)((BaseAdapter)
+                //UsersList1.setAdapter(useLadapter);
 
 
 
@@ -269,6 +278,8 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
                 // tweetDisplay.setText("Whoops - something went wrong!");
                 e.printStackTrace();
             }
+
+            context.pDialog.dismiss();
         }
 
     }
