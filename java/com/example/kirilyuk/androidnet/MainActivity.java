@@ -73,8 +73,10 @@ public class MainActivity extends ActionBarActivity {
     String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
             "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
             "Linux", "OS/2" };
-    int pageSize = 10;
-    int SkipUsers = 0;
+
+    int pageSize = 10;//по сколько юзеров загружать
+    int SkipUsers = 0;//с какого юзера
+    boolean usersEnded = false; //долистались ли мы до конца юзеров
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,46 +217,27 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-
+    //подгрузка юзеров в листвью
     public void loadNextPageUsers(){
-
-
-        pDialog.show();
-
-
-
-
-        ArrayList<String> us = new ArrayList<String>();
-        us.add("nnnnnnn");
-        us.add("null");
-        us.add("null");
-        UsersArrays.add(us);
-
-        ArrayList<String> us1 = new ArrayList<String>();
-        us1.add("4888888");
-        us1.add("not null");
-        us1.add("48.jpg");
-        UsersArrays.add(us1);
-        ArrayList<String> us2 = new ArrayList<String>();
-        us2.add("55555");
-        us2.add("not null1111");
-        us2.add("55.jpg");
-        UsersArrays.add(us2);
-        ArrayList<String> us3 = new ArrayList<String>();
-        us3.add("55555");
-        us3.add("not null1111");
-        us3.add("null");
-        UsersArrays.add(us3);
-        ArrayList<String> us4 = new ArrayList<String>();
-        us4.add("55555");
-        us4.add("not null1111");
-        us4.add("null");
-        UsersArrays.add(us4);
+        if(usersEnded){
+            return;
+        }
        // UsersList.removeFooterView(mLoadingFooter);
-     //   ((YourAdapter)((HeaderViewListAdapter)
- //       ((UserListAdapter) ((ListView)findViewById(R.id.listView)).getAdapter()).notifyDataSetChanged();
-        ((UserListAdapter)((BaseAdapter)((ListView)findViewById(R.id.listView)).getAdapter())).notifyDataSetChanged();
-        pDialog.dismiss();
+     // ((UserListAdapter) ((ListView)findViewById(R.id.listView)).getAdapter()).notifyDataSetChanged();
+//        ((UserListAdapter)((BaseAdapter)((ListView)findViewById(R.id.listView)).getAdapter())).notifyDataSetChanged();
+ //       pDialog.dismiss();
+
+        try {
+            SkipUsers = SkipUsers+10;
+            String searchURL = "http://192.168.123.168/AllUsers/" + SkipUsers + "/" + pageSize;
+
+            //AsyncTask<String, Void, String> execute = new GetUsersTask().execute(searchURL);
+            AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) context1,useLadapter,UsersArrays).execute(searchURL);
+        } catch (Exception e) {
+            tV.setText("Whoops - something went wrong!");
+            e.printStackTrace();
+        }
+
     }
 
 
