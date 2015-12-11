@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -59,7 +60,9 @@ public class MainActivity extends ActionBarActivity {
    ImageView profile_photo;
    TextView tV;
     ListView UsersList;
-    PlaceholderFragment myFragment;
+    PlaceholderFragment myFragmentUsers;
+    PlaceholderFragment myFragmentLogin;
+
     Button BtnSendFrag;
     Button BtnAddUsers;
     ProgressDialog pDialog;
@@ -83,15 +86,21 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        myFragment = new PlaceholderFragment();
+        myFragmentUsers = new PlaceholderFragment();
+        myFragmentUsers.FragName = "main";
+        myFragmentLogin = new PlaceholderFragment();
+        myFragmentLogin.FragName = "login";
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, myFragment)
+                    .add(R.id.container, myFragmentUsers)
+                    .add(R.id.container, myFragmentLogin)
+                    .hide(myFragmentLogin)
                     .commit();
         }
         context1 = this;
         BtnSendFrag = (Button) findViewById(R.id.button);
         BtnAddUsers = (Button)findViewById(R.id.butAddUser);
+
 
 
         pDialog = new ProgressDialog(this);
@@ -115,58 +124,7 @@ public class MainActivity extends ActionBarActivity {
                 }
 
 
-
-                UsersList = (ListView) findViewById(R.id.listView);
-                LayoutInflater layoutInflater = (LayoutInflater) context1.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                // LayoutInflater layoutInflater = inflater.inflate(R.layout.list_users, parent, false);
-                // inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-/*
-                final LinearLayout mLoadingFooter;
-                mLoadingFooter = (LinearLayout) layoutInflater.inflate(R.layout.loading_footer,null );
-                mLoadingFooter.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.FILL_PARENT, ListView.LayoutParams.WRAP_CONTENT));
-                UsersList.addFooterView(mLoadingFooter);
- */
-              //  ((UserListAdapter)((BaseAdapter)((ListView)findViewById(R.id.listView)).getAdapter()))
-
-                // mList.addFooterView(mLoadingFooter);
-                //http://habrahabr.ru/post/130319/
-
-
-                UsersList.setOnScrollListener(new AbsListView.OnScrollListener() {
-
-                    @Override
-                    public void onScrollStateChanged(AbsListView arg0, int arg1) {}
-
-                    @Override
-                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
- //                       UsersList.removeFooterView((LinearLayout) mLoadingFooter);
-                        if (visibleItemCount > 0 && firstVisibleItem + visibleItemCount == totalItemCount) {
-
-                            loadNextPageUsers();
-                        }
-                    }
-                });
-
-
-                tV = (TextView) findViewById(R.id.tV);
-                cnt++;
-                tV.setText("new Text-" + String.valueOf(cnt));
-                try {
-                    tV.setText(tV.getText().toString() + " Text ");
-                    //   String searchURL = "http://search.twitter.com/search.json?q=cats";
-                    //  String searchURL = "http://stackoverflow.com/questions/33059933/package-org-apache-http-client-does-not-exist";
-                    //String searchURL ="http://192.168.123.168/#/PageUsers/1";
-                    String searchURL = "http://192.168.123.168/AllUsers/" + SkipUsers + "/" + pageSize;
-
-                    //AsyncTask<String, Void, String> execute = new GetUsersTask().execute(searchURL);
-                    AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) context1,useLadapter,UsersArrays).execute(searchURL);
-                } catch (Exception e) {
-                    tV.setText("Whoops - something went wrong!");
-                    e.printStackTrace();
-                }
-
-
-
+                loadUserList();
 
             }
 
@@ -192,14 +150,6 @@ public class MainActivity extends ActionBarActivity {
         });
 
 
-        BtnAddUsers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-               // loadNextPageUsers(mLoadingFooter);
-               // UsersList.removeFooterView((LinearLayout) mLoadingFooter);
-            }
-          });
-
 /*
         UsersList.setOnScrollListener(new AbsListView.OnScrollListener() {
 
@@ -215,6 +165,67 @@ public class MainActivity extends ActionBarActivity {
         });
 */
 
+    }
+
+
+    public void loadUserList() {
+
+        UsersList = (ListView) findViewById(R.id.listView);
+        LayoutInflater layoutInflater = (LayoutInflater) context1.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        // LayoutInflater layoutInflater = inflater.inflate(R.layout.list_users, parent, false);
+        // inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+/*
+                final LinearLayout mLoadingFooter;
+                mLoadingFooter = (LinearLayout) layoutInflater.inflate(R.layout.loading_footer,null );
+                mLoadingFooter.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.FILL_PARENT, ListView.LayoutParams.WRAP_CONTENT));
+                UsersList.addFooterView(mLoadingFooter);
+ */
+        //  ((UserListAdapter)((BaseAdapter)((ListView)findViewById(R.id.listView)).getAdapter()))
+
+        // mList.addFooterView(mLoadingFooter);
+        //http://habrahabr.ru/post/130319/
+
+
+        UsersList.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView arg0, int arg1) {}
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                //                       UsersList.removeFooterView((LinearLayout) mLoadingFooter);
+                if (visibleItemCount > 0 && firstVisibleItem + visibleItemCount == totalItemCount) {
+
+                    loadNextPageUsers();
+                }
+            }
+        });
+
+       // loadUserList();
+        tV = (TextView) findViewById(R.id.tV);
+        cnt++;
+        tV.setText("new Text-" + String.valueOf(cnt));
+        try {
+            tV.setText(tV.getText().toString() + " Text ");
+            //   String searchURL = "http://search.twitter.com/search.json?q=cats";
+            //  String searchURL = "http://stackoverflow.com/questions/33059933/package-org-apache-http-client-does-not-exist";
+            //String searchURL ="http://192.168.123.168/#/PageUsers/1";
+            String searchURL = "http://192.168.123.168/AllUsers/" + SkipUsers + "/" + pageSize;
+
+            //AsyncTask<String, Void, String> execute = new GetUsersTask().execute(searchURL);
+            AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) context1, useLadapter, UsersArrays).execute(searchURL);
+        } catch (Exception e) {
+            tV.setText("Whoops - something went wrong!");
+            e.printStackTrace();
+        }
+
+        BtnAddUsers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                // loadNextPageUsers(mLoadingFooter);
+                // UsersList.removeFooterView((LinearLayout) mLoadingFooter);
+            }
+        });
     }
 
     //подгрузка юзеров в листвью
@@ -263,6 +274,37 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_usersList){
+            /*myFragment = new PlaceholderFragment();
+            myFragment.FragName = "main";
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, myFragment)
+                    .commit();
+*/
+            getSupportFragmentManager().beginTransaction()
+                    .hide(myFragmentLogin)
+                    .show(myFragmentUsers)
+                    .commit();
+
+            loadUserList();
+            return true;
+        }
+
+        if (id == R.id.action_login){
+            getSupportFragmentManager().beginTransaction()
+                    .show(myFragmentLogin)
+                    .hide(myFragmentUsers)
+                    .commit();
+            /*
+            myFragment = new PlaceholderFragment();
+            myFragment.FragName = "login";
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, myFragment)
+                        .commit();
+                        */
+            return true;
+
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -272,8 +314,10 @@ public class MainActivity extends ActionBarActivity {
      */
     public static class PlaceholderFragment extends Fragment {
 
+        String FragName;
 
         public PlaceholderFragment() {
+
         }
 
         TextView tV;
@@ -282,6 +326,12 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            if(FragName == "main") {
+              // rootView = inflater.inflate(R.layout.fragment_main, container, false);
+           }
+            if(FragName == "login") {
+                rootView = inflater.inflate(R.layout.fragment_login, container, false);
+            }
 
             //items = getActivity().getResources().getStringArray(R.array.test);
             tV = (TextView) rootView.findViewById(R.id.tV);

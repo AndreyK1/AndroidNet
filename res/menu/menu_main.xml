@@ -1,6 +1,46 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+
+    <item android:id="@+id/action_usersList" android:title="@string/action_usersList"
+        android:orderInCategory="100" app:showAsAction="always" />
+    <item android:id="@+id/action_login" android:title="@string/action_login"
+        android:orderInCategory="100" app:showAsAction="always" />
+    <item android:id="@+id/action_profile" android:title="@string/action_profile"
+        android:orderInCategory="100" app:showAsAction="always" />
+
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+        android:orderInCategory="100" app:showAsAction="always" />
+    <item
+        android:id="@+id/a_More"
+        app:showAsAction="always"
+         android:title="More">
+     <menu>
+
+         <!-- Refresh -->
+            <item
+                android:id="@+id/action_refresh"
+                app:showAsAction="never"
+                android:title="jjjjj"/>
+
+            <!-- Help -->
+            <item
+                android:id="@+id/action_help"
+
+                app:showAsAction="never"
+                android:title="gggggggg"/>
+
+            <!-- Check updates -->
+            <item
+                android:id="@+id/action_check_updates"
+
+                app:showAsAction="never"
+                android:title="ddddd"/>
+        </menu>
+    </item>
+
+
+
+
+
 </menu>
