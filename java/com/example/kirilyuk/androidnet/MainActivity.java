@@ -1,5 +1,6 @@
 package com.example.kirilyuk.androidnet;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -59,12 +60,17 @@ public class MainActivity extends ActionBarActivity {
 
    ImageView profile_photo;
    TextView tV;
+    TextView loginTxt;
     ListView UsersList;
     PlaceholderFragment myFragmentUsers;
     PlaceholderFragment myFragmentLogin;
 
     Button BtnSendFrag;
     Button BtnAddUsers;
+    Button BtnLogin;
+
+    String Server = "http://192.168.123.168/";
+
     ProgressDialog pDialog;
     UserListAdapter useLadapter;
     ArrayList<ArrayList<String>> UsersArrays = new ArrayList<ArrayList<String>>();
@@ -100,6 +106,7 @@ public class MainActivity extends ActionBarActivity {
         context1 = this;
         BtnSendFrag = (Button) findViewById(R.id.button);
         BtnAddUsers = (Button)findViewById(R.id.butAddUser);
+       // BtnLogin = (Button)findViewById(R.id.btLogin);
 
 
 
@@ -315,6 +322,7 @@ public class MainActivity extends ActionBarActivity {
     public static class PlaceholderFragment extends Fragment {
 
         String FragName;
+        View rootView;
 
         public PlaceholderFragment() {
 
@@ -328,15 +336,92 @@ public class MainActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             if(FragName == "main") {
               // rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
            }
             if(FragName == "login") {
                 rootView = inflater.inflate(R.layout.fragment_login, container, false);
+
+                Button BtnLoginIn = (Button) rootView.findViewById(R.id.btLogin);
+                Button BtnMe = (Button) rootView.findViewById(R.id.btMe);
+                final TextView loginTxt = (TextView) rootView.findViewById(R.id.login);
+                BtnLoginIn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        Log.v("My project login", "login");
+                        loginTxt.setText("Логинимся");
+                        try {
+                            // tV.setText("Whoops - Whoops Whoops Whoops Whoops!");
+                            ((MainActivity) getActivity()).BtnSendFrag.setText("opaaaa");
+                            // button
+                            // (Activity) activity.tV.
+                            //String searchURL = getActivity().Server; //  "http://192.168.123.168/AllUsers/" + SkipUsers + "/" + pageSize;
+                            String url = ((MainActivity) getActivity()).Server+"login";
+
+                            AsyncTask<String, Void, Boolean> execute = new LoginAsyncTask(((MainActivity) getActivity())).execute(url);
+                            // AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) activity, useLadapter, UsersArrays).execute(searchURL);
+                        } catch (Exception e) {
+                            tV.setText("Whoops - something went wrong!");
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+
+                BtnMe.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        Log.v("My project  Me", "Me");
+                        loginTxt.setText("Получаем ми");
+                        try {
+                            // tV.setText("Whoops - Whoops Whoops Whoops Whoops!");
+                            ((MainActivity) getActivity()).BtnSendFrag.setText("meeee");
+                            // button
+                            // (Activity) activity.tV.
+                            //String searchURL = getActivity().Server; //  "http://192.168.123.168/AllUsers/" + SkipUsers + "/" + pageSize;
+                            String url = ((MainActivity) getActivity()).Server+"me";
+
+                            AsyncTask<String, Void, Boolean> execute = new GetMeAsyncTask(((MainActivity) getActivity())).execute(url);
+                            // AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) activity, useLadapter, UsersArrays).execute(searchURL);
+                        } catch (Exception e) {
+                            tV.setText("Whoops - something went wrong!");
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+               // getActivity()
             }
 
             //items = getActivity().getResources().getStringArray(R.array.test);
             tV = (TextView) rootView.findViewById(R.id.tV);
             return rootView;
         }
+
+
+/*
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+
+            final TextView tV =(TextView)  activity.findViewById(R.id.tV);
+            //final  Activity activity;
+
+           try {
+                mListener = (FragmentListener) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString()
+                        + " must implement FragmentListener");
+            }
+
+            mListener.onAttachTestFragment()
+            if(FragName == "login") {
+                //login
+
+
+            }
+
+        }
+*/
     }
 
 
