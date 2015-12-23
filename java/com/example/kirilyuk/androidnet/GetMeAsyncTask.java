@@ -55,7 +55,8 @@ public class GetMeAsyncTask  extends AsyncTask<String, Void, Boolean> {
             //       conn.setDoOutput(true);
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept-Charset", charset);
-            String accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRkZDEiLCJwYXNzd29yZCI6InNkc2QiLCJpYXQiOjE0NDM1OTkwNzl9._MR8W6TNYyLhvesnWar740plCEQwtiAcp2U5yvjJ84w";
+            //String accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRkZDEiLCJwYXNzd29yZCI6InNkc2QiLCJpYXQiOjE0NDM1OTkwNzl9._MR8W6TNYyLhvesnWar740plCEQwtiAcp2U5yvjJ84w";
+            String accessToken = context.user.get(3);
             //conn.setRequestProperty("authorization", "Token token="
             conn.setRequestProperty("authorization", "Bearer "
                     + accessToken);
@@ -117,11 +118,33 @@ public class GetMeAsyncTask  extends AsyncTask<String, Void, Boolean> {
         Log.v("My Project onPostExecute.result",String.valueOf(result1) );
         StringBuilder tweetResultBuilder = new StringBuilder();
         try {
-            //  ArrayList<HashMap<String, String>> uslist = new ArrayList<HashMap<String, String>>();
-
-
             JSONObject resultObject = new JSONObject(result1);
-            JSONArray tweetArray = resultObject.getJSONArray("data");
+            JSONObject tweetObject = resultObject.getJSONObject("data");
+            //JSONArray tweetArray = resultObject.getJSONArray("data");
+            Log.v("My Project tweetObject.user",String.valueOf(tweetObject.get("email")) );
+            if(tweetObject.length() >0) {
+                context.user.clear();
+                context.user.add(String.valueOf(tweetObject.get("id")));
+                context.user.add(String.valueOf(tweetObject.get("email"))+"-");
+                context.user.add(String.valueOf(tweetObject.get("foto")));
+                context.user.add(String.valueOf(tweetObject.get("token")));
+                Log.v("My Project context.user",String.valueOf(context.user.get(0)) );
+                /*for (int t = 0; t < tweetArray.length(); t++) {
+
+                    JSONObject tweetObject = tweetArray.getJSONObject(t);
+                    //ArrayList<String> us = new ArrayList<String>();
+                    context.user.add(String.valueOf(tweetObject.get("id")));
+                    context.user.add(String.valueOf(tweetObject.get("email")));
+                    context.user.add(String.valueOf(tweetObject.get("foto")));
+                    Log.v("My Project context.user",String.valueOf(context.user.get(0)) );
+                    //us.add(String.valueOf(tweetObject.get("foto")));
+                    //us.add(String.valueOf(tweetObject.get("foto")));
+                    //UsersArrays.add(us);
+                }*/
+            }else{
+                context.usersEnded = true;
+            }
+
          /*
             if(tweetArray.length() >0) {
                 for (int t = 0; t < tweetArray.length(); t++) {
@@ -154,7 +177,7 @@ public class GetMeAsyncTask  extends AsyncTask<String, Void, Boolean> {
             // tweetDisplay.setText("Whoops - something went wrong!");
             e.printStackTrace();
         }
-
+        context.ShowAutorizedUser();
         context.pDialog.dismiss();
     }
 

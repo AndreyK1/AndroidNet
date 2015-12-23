@@ -5,12 +5,23 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+/*
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+*/
+
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+
+
 import android.support.v7.app.ActionBarActivity;
 import android.text.Layout;
 import android.util.Log;
@@ -30,6 +41,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /*
 import org.apache.http.HttpEntity;
@@ -48,32 +60,44 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-
+//public class MainActivity extends Activity {
 public class MainActivity extends ActionBarActivity {
 
    ImageView profile_photo;
    TextView tV;
     TextView loginTxt;
     ListView UsersList;
-    PlaceholderFragment myFragmentUsers;
-    PlaceholderFragment myFragmentLogin;
+
+    //FragmentManager fragmentManager;
+   // PlaceholderFragment myFragmentUsers;
+   // PlaceholderFragment myFragmentLogin;
+    MyFragment myFragmentUsers;
+    MyFragment myFragmentLogin;
+    SharedPreferences sPref;
 
     Button BtnSendFrag;
     Button BtnAddUsers;
     Button BtnLogin;
+  FragmentManager supportFragmentManager= getFragmentManager();
+   //FragmentManager supportFragmentManager;
+
+    FragmentTransaction fragmentTransaction;
 
     String Server = "http://192.168.123.168/";
 
     ProgressDialog pDialog;
     UserListAdapter useLadapter;
     ArrayList<ArrayList<String>> UsersArrays = new ArrayList<ArrayList<String>>();
+    ArrayList<String> user=new ArrayList<String>(); //авторизованый юзер
     //String[] emailsArr;
 
 
@@ -89,20 +113,70 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+ //       savedInstanceState = null;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        myFragmentUsers = new PlaceholderFragment();
-        myFragmentUsers.FragName = "main";
-        myFragmentLogin = new PlaceholderFragment();
-        myFragmentLogin.FragName = "login";
+       // supportFragmentManager= getSupportFragmentManager();
+
+       // supportFragmentManager  = getFragmentManager();
+        //savedInstanceState = null;
+
+
+       // if (myFragmentUsers == null) {
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, myFragmentUsers)
-                    .add(R.id.container, myFragmentLogin)
+/*
+            myFragmentUsers = new PlaceholderFragment();
+            myFragmentUsers.FragName = "main";
+            myFragmentLogin = new PlaceholderFragment();
+            myFragmentLogin.FragName = "login";
+            Toast.makeText(this, "onCreate - savedInstanceState", Toast.LENGTH_SHORT).show();
+      //      supportFragmentManager = getSupportFragmentManager();
+           // getSupportFragmentManager().beginTransaction()
+
+
+
+            fragmentTransaction = supportFragmentManager.beginTransaction();
+            fragmentTransaction
+                    .add(R.id.container, myFragmentUsers,"main")
+                    .add(R.id.container, myFragmentLogin,"login")
                     .hide(myFragmentLogin)
                     .commit();
-        }
+*/
+
+          /*  MyFragment myFragmentUsers = new MyFragment("main");
+            MyFragment myFragmentLogin = new MyFragment("login");*/
+            MyFragment myFragmentUsers = MyFragment.newInstance("main");
+            MyFragment myFragmentLogin = MyFragment.newInstance("login");
+            FragmentTransaction ft = supportFragmentManager.beginTransaction();
+            //ft.add(R.id.fragment2, frag2);
+            ft.add(R.id.container, myFragmentUsers,"main");
+            ft.add(R.id.container, myFragmentLogin,"login");
+            ft.hide(myFragmentLogin);
+            ft.commit();
+
+        SkipUsers = 0;
+/*
+           getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, PlaceholderFragment.newInstance("main").commit());*/
+       }
+
+      //  else{
+            if(supportFragmentManager.findFragmentByTag("main") != null) {
+                Toast.makeText(this, "onCreate - main not null", Toast.LENGTH_SHORT).show();
+                myFragmentUsers =(MyFragment) supportFragmentManager.findFragmentByTag("main");
+
+            }else{
+                Toast.makeText(this, "onCreate - main null", Toast.LENGTH_SHORT).show();
+            }
+            if(supportFragmentManager.findFragmentByTag("login") != null) {
+                Toast.makeText(this, "onCreate - login not null", Toast.LENGTH_SHORT).show();
+                myFragmentLogin = (MyFragment) supportFragmentManager.findFragmentByTag("login");
+            }else{
+                Toast.makeText(this, "onCreate - login null", Toast.LENGTH_SHORT).show();
+            }
+     //   }
+
         context1 = this;
         BtnSendFrag = (Button) findViewById(R.id.button);
         BtnAddUsers = (Button)findViewById(R.id.butAddUser);
@@ -135,6 +209,8 @@ public class MainActivity extends ActionBarActivity {
 
             }
 
+
+
 /*
             private Bitmap getImageBitmap(String url) {
                 Log.v("Bitmap", "here1");
@@ -157,6 +233,9 @@ public class MainActivity extends ActionBarActivity {
         });
 
 
+        this.loadText("user");
+        this.ShowAutorizedUser();
+
 /*
         UsersList.setOnScrollListener(new AbsListView.OnScrollListener() {
 
@@ -172,6 +251,61 @@ public class MainActivity extends ActionBarActivity {
         });
 */
 
+    }
+
+//сохранение перед поворотом
+    /*public Object onRetainNonConfigurationInstance() {
+        return supportFragmentManager;
+    }*/
+ /*
+    @Override
+   public Object onRetainNonConfigurationInstance() {
+        return this;
+    }
+*/
+
+    //сохранение
+    void saveText(String what) {
+        sPref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        if(what =="user"){
+            if(user.size()>0){
+                ed.putString("user_id", String.valueOf(user.get(0)));
+                ed.putString("user_email", String.valueOf(user.get(1)));
+                ed.putString("user_foto", String.valueOf(user.get(2)));
+                ed.putString("user_token", String.valueOf(user.get(3)));
+
+                ed.commit();
+                Toast.makeText(this, "Text saved-"+"user_email "+sPref.getString("user_email", ""), Toast.LENGTH_SHORT).show();
+            }
+        }
+
+
+    }
+
+    void loadText(String what) {
+        sPref = getPreferences(MODE_PRIVATE);
+        if(what =="user") {
+            if (user.size() == 0) {
+                //String savedText = sPref.getString(SAVED_TEXT, "");
+                //etText.setText(savedText);
+                user.add(String.valueOf(sPref.getString("user_id", "")));
+                user.add(String.valueOf(sPref.getString("user_email", "")));
+                user.add(String.valueOf(sPref.getString("user_foto", "")));
+                user.add(String.valueOf(sPref.getString("user_token", "")));
+                Toast.makeText(this, "Text loaded", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "hhh", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void ShowAutorizedUser() {
+        if(user.size()>0){
+            Toast.makeText(this, "ShowAutorizedUser : " + String.valueOf(user.get(1)), Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(this, "ShowAutorizedUser : " + "none", Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -276,9 +410,21 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        myFragmentUsers =(MyFragment) supportFragmentManager.findFragmentByTag("main");
+        myFragmentLogin =(MyFragment) supportFragmentManager.findFragmentByTag("login");
+
+    /*    List<Fragment> lfrg= getSupportFragmentManager().getFragments();
+        Fragment fr1 =  lfrg.get(0);
+        Fragment fr2 =  lfrg.get(1);*/
+       // Fragment fr3 =  lfrg.get(2);
+      /* Toast.makeText(this, "getSupportFragmentManager: fr1 "+((PlaceholderFragment) fr1).FragName+
+                " getSupportFragmentManager: fr2 "+((PlaceholderFragment) fr2).FragName
+              // + "getSupportFragmentManager: fr3 "+((PlaceholderFragment) fr3).FragName
+                , Toast.LENGTH_LONG).show();*/
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+           // List<Fragment> lfrg= getSupportFragmentManager().getFragments();
             return true;
         }
         if (id == R.id.action_usersList){
@@ -288,9 +434,16 @@ public class MainActivity extends ActionBarActivity {
                     .replace(R.id.container, myFragment)
                     .commit();
 */
-            getSupportFragmentManager().beginTransaction()
+         //   Toast.makeText(this, "menu - action_usersList: "+myFragmentLogin.FragName , Toast.LENGTH_LONG).show();
+
+
+           // getSupportFragmentManager().beginTransaction()
+                   supportFragmentManager.beginTransaction()
+            //fragmentTransaction
                     .hide(myFragmentLogin)
-                    .show(myFragmentUsers)
+                   .show(myFragmentUsers)
+                   // .hide(fr2)
+                  //  .show(fr1)
                     .commit();
 
             loadUserList();
@@ -298,9 +451,17 @@ public class MainActivity extends ActionBarActivity {
         }
 
         if (id == R.id.action_login){
-            getSupportFragmentManager().beginTransaction()
-                    .show(myFragmentLogin)
+       //    Toast.makeText(this, "menu - action_login: "+myFragmentLogin.FragName , Toast.LENGTH_LONG).show();
+
+
+
+            //getSupportFragmentManager().beginTransaction()
+            supportFragmentManager.beginTransaction()
+            //fragmentTransaction
                     .hide(myFragmentUsers)
+                    .show(myFragmentLogin)
+                   // .hide(fr1)
+                   // .show(fr2)
                     .commit();
             /*
             myFragment = new PlaceholderFragment();
@@ -319,25 +480,34 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
+/*
     public static class PlaceholderFragment extends Fragment {
-
+        private static final String ARG_SECTION_NUMBER = "section_number";
         String FragName;
         View rootView;
+        ArrayList<PlaceholderFragment> arr;
 
         public PlaceholderFragment() {
-
+            //FragName =FragName1;
         }
+
 
         TextView tV;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             if(FragName == "main") {
-              // rootView = inflater.inflate(R.layout.fragment_main, container, false);
+               rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
            }
+            if(FragName == "profile") {
+                // rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            }
             if(FragName == "login") {
                 rootView = inflater.inflate(R.layout.fragment_login, container, false);
 
@@ -363,7 +533,7 @@ public class MainActivity extends ActionBarActivity {
                             tV.setText("Whoops - something went wrong!");
                             e.printStackTrace();
                         }
-
+                       // ((MainActivity) getActivity()).ShowAutorizedUser();
                     }
                 });
 
@@ -386,6 +556,7 @@ public class MainActivity extends ActionBarActivity {
                             tV.setText("Whoops - something went wrong!");
                             e.printStackTrace();
                         }
+                       // ((MainActivity) getActivity()).ShowAutorizedUser();
 
                     }
                 });
@@ -395,34 +566,10 @@ public class MainActivity extends ActionBarActivity {
             //items = getActivity().getResources().getStringArray(R.array.test);
             tV = (TextView) rootView.findViewById(R.id.tV);
             return rootView;
-        }
-
-
-/*
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-
-            final TextView tV =(TextView)  activity.findViewById(R.id.tV);
-            //final  Activity activity;
-
-           try {
-                mListener = (FragmentListener) activity;
-            } catch (ClassCastException e) {
-                throw new ClassCastException(activity.toString()
-                        + " must implement FragmentListener");
-            }
-
-            mListener.onAttachTestFragment()
-            if(FragName == "login") {
-                //login
-
-
-            }
 
         }
-*/
+
     }
-
+*/
 
 }

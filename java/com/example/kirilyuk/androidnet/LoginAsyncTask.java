@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -74,9 +76,16 @@ public class LoginAsyncTask extends AsyncTask<String, Void, Boolean> {
             params.add(new BasicNameValuePair("secondParam", paramValue2));
             params.add(new BasicNameValuePair("thirdParam", paramValue3));
 */
+            EditText ed =(EditText) context.findViewById(R.id.edLogin);
+            String email = String.valueOf(ed.getText());
+            EditText edP =(EditText) context.findViewById(R.id.edPassword);
+            String password = String.valueOf(edP.getText());
+
+            Log.v("My Project email/password",email+" / "+ password);
+
             Uri.Builder builder = new Uri.Builder()
-                    .appendQueryParameter("email", "111")
-                    .appendQueryParameter("password", "222");
+                    .appendQueryParameter("email", email)
+                    .appendQueryParameter("password", password);
             String query = builder.build().getEncodedQuery();
 
             OutputStream os = conn.getOutputStream();
@@ -89,6 +98,28 @@ public class LoginAsyncTask extends AsyncTask<String, Void, Boolean> {
 
             conn.connect();
 
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                try {
+                    //response from the server
+                    InputStream in = new BufferedInputStream(conn.getInputStream());
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    Log.v("My Project conn.reader",String.valueOf(reader) );
+                    // context.loginTxt.setText(line);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                Log.v("My Project responseCoder",String.valueOf(responseCode) );
+                Toast.makeText(context, "responseCoder - err: " +String.valueOf(responseCode), Toast.LENGTH_LONG).show();
+            }
 /*
             int code = conn.getResponseCode();
             Log.v("My Project conn.error",String.valueOf(code) );
@@ -106,24 +137,10 @@ public class LoginAsyncTask extends AsyncTask<String, Void, Boolean> {
             e.printStackTrace();
         }
 
-        try {
-            //response from the server
-            InputStream in = new BufferedInputStream(conn.getInputStream());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                result.append(line);
-            }
-
-            Log.v("My Project conn.reader",String.valueOf(reader) );
-           // context.loginTxt.setText(line);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         conn.disconnect();
+
 
         result1 = result.toString();
         return true;
@@ -141,22 +158,35 @@ public class LoginAsyncTask extends AsyncTask<String, Void, Boolean> {
 
 
             JSONObject resultObject = new JSONObject(result1);
-            JSONArray tweetArray = resultObject.getJSONArray("data");
-         /*
-            if(tweetArray.length() >0) {
-                for (int t = 0; t < tweetArray.length(); t++) {
+            JSONObject tweetObject = resultObject.getJSONObject("data");
+            //JSONArray tweetArray = resultObject.getJSONArray("data");
+            Log.v("My Project tweetObject.user",String.valueOf(tweetObject.get("email")) );
+            if(tweetObject.length() >0) {
+                context.user.clear();
+                context.user.add(String.valueOf(tweetObject.get("id")));
+                context.user.add(String.valueOf(tweetObject.get("email")));
+                context.user.add(String.valueOf(tweetObject.get("foto")));
+                context.user.add(String.valueOf(tweetObject.get("token")));
+                Log.v("My Project context.user",String.valueOf(context.user.get(0)) );
+
+                context.saveText("user");
+
+                /*for (int t = 0; t < tweetArray.length(); t++) {
 
                     JSONObject tweetObject = tweetArray.getJSONObject(t);
-                    ArrayList<String> us = new ArrayList<String>();
-                    us.add(String.valueOf(tweetObject.get("id") + " - " + String.valueOf(tweetObject.get("email"))));
-                    us.add(String.valueOf(tweetObject.get("foto")));
-                    us.add(String.valueOf(tweetObject.get("foto")));
-                    UsersArrays.add(us);
-                }
+                    //ArrayList<String> us = new ArrayList<String>();
+                    context.user.add(String.valueOf(tweetObject.get("id")));
+                    context.user.add(String.valueOf(tweetObject.get("email")));
+                    context.user.add(String.valueOf(tweetObject.get("foto")));
+                    Log.v("My Project context.user",String.valueOf(context.user.get(0)) );
+                    //us.add(String.valueOf(tweetObject.get("foto")));
+                    //us.add(String.valueOf(tweetObject.get("foto")));
+                    //UsersArrays.add(us);
+                }*/
             }else{
                 context.usersEnded = true;
             }
-    */
+     /* */
      /*
             ListView UsersList1 = (ListView) context.findViewById(R.id.listView);
             //useLadapter = new UserListAdapter((MainActivity) context, emailsArr, passesArr,fotosArr);
@@ -174,6 +204,8 @@ public class LoginAsyncTask extends AsyncTask<String, Void, Boolean> {
             // tweetDisplay.setText("Whoops - something went wrong!");
             e.printStackTrace();
         }
+
+       context.ShowAutorizedUser();
 
         context.pDialog.dismiss();
     }
