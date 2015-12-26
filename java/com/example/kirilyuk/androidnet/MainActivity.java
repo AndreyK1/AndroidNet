@@ -388,7 +388,7 @@ public class MainActivity extends ActionBarActivity {
 
     //подгрузка юзеров в листвью
     public void loadNextPageUsers(){
-        if(usersEnded){
+       if(usersEnded){
             return;
         }
        // UsersList.removeFooterView(mLoadingFooter);

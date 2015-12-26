@@ -35,7 +35,7 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
         public MainActivity context;
        UserListAdapter useLadapter;
     //   ArrayList<ArrayList<String>> UsersArrays = new ArrayList<ArrayList<String>>();
-    ArrayList<UserListModel> UsersArrays = new ArrayList<UserListModel>();
+    ArrayList<UserListModel> UsersArrays; // = new ArrayList<UserListModel>();
 
       //  public UsersListAsyncTask(MainActivity a,UserListAdapter useLadapter,ArrayList<ArrayList<String>> UsersArrays)
       public UsersListAsyncTask(MainActivity a,UserListAdapter useLadapter,ArrayList<UserListModel> UsersArrays)
@@ -130,11 +130,13 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
               */
                         UserListModel us = new UserListModel(String.valueOf(tweetObject.get("id"))+String.valueOf(tweetObject.get("email")),String.valueOf(tweetObject.get("foto")),String.valueOf(tweetObject.get("foto")));
                         UsersArrays.add(us);
+                        Log.v("My Project UsersArrays.add","UsersArrays.add");
                     }
+
                 }else{
                     context.usersEnded = true;
                 }
-                ListView UsersList1 = (ListView) context.findViewById(R.id.listView);
+               ListView UsersList1 = (ListView) context.findViewById(R.id.listView);
                 //useLadapter = new UserListAdapter((MainActivity) context, emailsArr, passesArr,fotosArr);
                // useLadapter = new UserListAdapter((MainActivity) context, emails, passes,passes);
 /*
@@ -147,8 +149,19 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
 
             }
 */
-                useLadapter.notifyDataSetChanged();
+            //    ((UserListAdapter)((BaseAdapter)UsersList1.getAdapter())).notifyDataSetChanged();
 
+                //useLadapter.notifyDataSetChanged();
+                UsrListFragment myFragmentUsers = (UsrListFragment) context.supportFragmentManager.findFragmentByTag("main");
+                ((UserListAdapter)((BaseAdapter)((UsrListFragment)myFragmentUsers).useLadapter)).notifyDataSetChanged();
+              // myFragmentUsers.getListView().refreshDrawableState();
+                //myFragmentUsers.getListView().setSelection(messages.size()-1);
+                //myFragmentUsers.getListView().setNotifyDataChanged();
+                      // .invalidateViews();
+
+                context.supportFragmentManager.beginTransaction()
+                        //fragmentTransaction
+                        .show(myFragmentUsers).commit();
 
             } catch (Exception e) {
                 // tweetDisplay.setText("Whoops - something went wrong!");

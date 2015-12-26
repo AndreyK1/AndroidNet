@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class UsrListFragment extends ListFragment implements AbsListView.OnScrollListener {
    // boolean mDualPane;
     int mCurCheckPosition = 0;
+    public UserListAdapter useLadapter;
 /*
     public static final UsrListFragment newInstance(String name)
     {
@@ -40,7 +41,7 @@ public class UsrListFragment extends ListFragment implements AbsListView.OnScrol
         */
 
         ArrayList<UserListModel> UsersArrays = ((MainActivity)getActivity()).UsersArrays;
-       UserListAdapter useLadapter = ((MainActivity)getActivity()).useLadapter;
+       useLadapter = ((MainActivity)getActivity()).useLadapter;
         // Populate list with our static array of titles.
        /*
       setListAdapter(new ArrayAdapter<String>(getActivity(),
