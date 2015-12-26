@@ -27,6 +27,11 @@ public class MyFragment  extends Fragment {
     }
 */
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        setRetainInstance(true);
+        super.onCreate(savedInstanceState);
+    }
 
     public static final MyFragment newInstance(String name)
     {
@@ -41,6 +46,7 @@ public class MyFragment  extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //setRetainInstanceState(true);
         /*View v = inflater.inflate(R.layout.fragment2, null);
 
         Button button = (Button) v.findViewById(R.id.button);
@@ -52,74 +58,84 @@ public class MyFragment  extends Fragment {
 
         return v;*/
 
-        String FragName  = getArguments().getString("name");
+        if (savedInstanceState == null) {
+            String FragName = getArguments().getString("name");
 
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        if(FragName == "main") {
-            rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            if (FragName == "main") {
+                rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        }
-        if(FragName == "profile") {
-            // rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            }
+            if (FragName == "profile") {
+                // rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        }
-        if(FragName == "login") {
-            rootView = inflater.inflate(R.layout.fragment_login, container, false);
+            }
+            if (FragName == "login") {
+                rootView = inflater.inflate(R.layout.fragment_login, container, false);
 
-            Button BtnLoginIn = (Button) rootView.findViewById(R.id.btLogin);
-            Button BtnMe = (Button) rootView.findViewById(R.id.btMe);
-            final TextView loginTxt = (TextView) rootView.findViewById(R.id.login);
-            BtnLoginIn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View arg0) {
-                    Log.v("My project login", "login");
-                    loginTxt.setText("Логинимся");
-                    try {
-                        // tV.setText("Whoops - Whoops Whoops Whoops Whoops!");
-                        ((MainActivity) getActivity()).BtnSendFrag.setText("opaaaa");
-                        // button
-                        // (Activity) activity.tV.
-                        //String searchURL = getActivity().Server; //  "http://192.168.123.168/AllUsers/" + SkipUsers + "/" + pageSize;
-                        String url = ((MainActivity) getActivity()).Server+"login";
+                Button BtnLoginIn = (Button) rootView.findViewById(R.id.btLogin);
+                Button BtnMe = (Button) rootView.findViewById(R.id.btMe);
+                final TextView loginTxt = (TextView) rootView.findViewById(R.id.login);
+                BtnLoginIn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        Log.v("My project login", "login");
+                        loginTxt.setText("Логинимся");
+                        try {
+                            // tV.setText("Whoops - Whoops Whoops Whoops Whoops!");
+                            ((MainActivity) getActivity()).BtnSendFrag.setText("opaaaa");
+                            // button
+                            // (Activity) activity.tV.
+                            //String searchURL = getActivity().Server; //  "http://192.168.123.168/AllUsers/" + SkipUsers + "/" + pageSize;
+                            String url = ((MainActivity) getActivity()).Server + "login";
 
-                        AsyncTask<String, Void, Boolean> execute = new LoginAsyncTask(((MainActivity) getActivity())).execute(url);
-                        // AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) activity, useLadapter, UsersArrays).execute(searchURL);
-                    } catch (Exception e) {
-                      //  tV.setText("Whoops - something went wrong!");
-                        e.printStackTrace();
+                            AsyncTask<String, Void, Boolean> execute = new LoginAsyncTask(((MainActivity) getActivity())).execute(url);
+                            // AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) activity, useLadapter, UsersArrays).execute(searchURL);
+                        } catch (Exception e) {
+                            //  tV.setText("Whoops - something went wrong!");
+                            e.printStackTrace();
+                        }
+                        // ((MainActivity) getActivity()).ShowAutorizedUser();
                     }
-                    // ((MainActivity) getActivity()).ShowAutorizedUser();
-                }
-            });
+                });
 
-            BtnMe.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View arg0) {
-                    Log.v("My project  Me", "Me");
-                    loginTxt.setText("Получаем ми");
-                    try {
-                        // tV.setText("Whoops - Whoops Whoops Whoops Whoops!");
-                        ((MainActivity) getActivity()).BtnSendFrag.setText("meeee");
-                        // button
-                        // (Activity) activity.tV.
-                        //String searchURL = getActivity().Server; //  "http://192.168.123.168/AllUsers/" + SkipUsers + "/" + pageSize;
-                        String url = ((MainActivity) getActivity()).Server+"me";
+                BtnMe.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        Log.v("My project  Me", "Me");
+                        loginTxt.setText("Получаем ми");
+                        try {
+                            // tV.setText("Whoops - Whoops Whoops Whoops Whoops!");
+                            ((MainActivity) getActivity()).BtnSendFrag.setText("meeee");
+                            // button
+                            // (Activity) activity.tV.
+                            //String searchURL = getActivity().Server; //  "http://192.168.123.168/AllUsers/" + SkipUsers + "/" + pageSize;
+                            String url = ((MainActivity) getActivity()).Server + "me";
 
-                        AsyncTask<String, Void, Boolean> execute = new GetMeAsyncTask(((MainActivity) getActivity())).execute(url);
-                        // AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) activity, useLadapter, UsersArrays).execute(searchURL);
-                    } catch (Exception e) {
-                       // tV.setText("Whoops - something went wrong!");
-                        e.printStackTrace();
+                            AsyncTask<String, Void, Boolean> execute = new GetMeAsyncTask(((MainActivity) getActivity())).execute(url);
+                            // AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) activity, useLadapter, UsersArrays).execute(searchURL);
+                        } catch (Exception e) {
+                            // tV.setText("Whoops - something went wrong!");
+                            e.printStackTrace();
+                        }
+                        // ((MainActivity) getActivity()).ShowAutorizedUser();
+
                     }
-                    // ((MainActivity) getActivity()).ShowAutorizedUser();
-
-                }
-            });
-            // getActivity()
+                });
+                // getActivity()
+            }
+            return rootView;
         }
-
+        return container ;
         //items = getActivity().getResources().getStringArray(R.array.test);
        // tV = (TextView) rootView.findViewById(R.id.tV);
-        return rootView;
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //outState.putString("time_key", mTime);
+       // outState.putAll(outState);
     }
 }

@@ -38,12 +38,14 @@ public class UserListAdapter extends BaseAdapter{// BaseAdapter  ArrayAdapter<Ar
     ArrayList<String> result1;
     ArrayList<String> fotos;
 
-    ArrayList<ArrayList<String>> users;
+ //   ArrayList<ArrayList<String>> users;
+    ArrayList<UserListModel> users;
 
     Context context;
     int [] imageId;
     private static LayoutInflater inflater=null;
-    public UserListAdapter(MainActivity mainActivity, int resource, ArrayList<ArrayList<String>> AllList) {
+   // public UserListAdapter(MainActivity mainActivity, int resource, ArrayList<ArrayList<String>> AllList) {
+        public UserListAdapter(MainActivity mainActivity, int resource, ArrayList<UserListModel> AllList) {
       //  super(mainActivity, resource);
         // TODO Auto-generated constructor stub
       /*
@@ -131,12 +133,16 @@ public class UserListAdapter extends BaseAdapter{// BaseAdapter  ArrayAdapter<Ar
         holder.details = (TextView)rowView.findViewById(R.id.pass);
         rowView.setTag(holder);
 
-        holder.txtTitle.setText(users.get(position).get(0));
+    //    holder.txtTitle.setText(users.get(position).get(0));
+        holder.txtTitle.setText(users.get(position).email);
         //holder.imgIcon.setImageResource(location.icon);
-        if(users.get(position).get(1).equals("null")){
-            holder.details.setText(users.get(position).get(1)+"+null2+");
+   //     if(users.get(position).get(1).equals("null")){
+        if(users.get(position).pass.equals("null")){
+  //          holder.details.setText(users.get(position).get(1)+"+null2+");
+            holder.details.setText(users.get(position).pass+"+null2+");
         }else{
-            holder.details.setText(users.get(position).get(1));
+//            holder.details.setText(users.get(position).get(1));
+            holder.details.setText(users.get(position).pass);
         }
         //holder.imgIcon.setImageResource(R.drawable.test);
 
@@ -154,12 +160,14 @@ public class UserListAdapter extends BaseAdapter{// BaseAdapter  ArrayAdapter<Ar
         //fotos
        // if(str1.equals(str2))
 
-        if(users.get(position).get(2).equals("null")){
+ //       if(users.get(position).get(2).equals("null")){
+        if(users.get(position).fot.equals("null")){
             holder.imgIcon.setImageResource(R.drawable.test);
           //  img.setImageResource(R.drawable.test);
         }else{
            // String str1 = "http://192.168.123.168/foto/"+fotos.get(position);
-            String str1 = "http://192.168.123.168/foto/"+users.get(position).get(2);
+         //   String str1 = "http://192.168.123.168/foto/"+users.get(position).get(2);
+            String str1 = "http://192.168.123.168/foto/"+users.get(position).fot;
 
                 //получение картинок
                     //ImageView profile_photo = (ImageView) findViewById(R.id.imageTest);
@@ -180,7 +188,8 @@ public class UserListAdapter extends BaseAdapter{// BaseAdapter  ArrayAdapter<Ar
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                Toast.makeText(context, "You Clicked "+users.get(position).get(0), Toast.LENGTH_LONG).show();
+               // Toast.makeText(context, "You Clicked "+users.get(position).get(0), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "You Clicked "+users.get(position).email, Toast.LENGTH_LONG).show();
             }
         });
 

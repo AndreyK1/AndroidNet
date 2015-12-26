@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentTransaction;
 */
 
 import android.app.Fragment;
+//import android.app.FragmentActivity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 
@@ -80,9 +81,10 @@ public class MainActivity extends ActionBarActivity {
     //FragmentManager fragmentManager;
    // PlaceholderFragment myFragmentUsers;
    // PlaceholderFragment myFragmentLogin;
-    MyFragment myFragmentUsers;
+    UsrListFragment myFragmentUsers;
     MyFragment myFragmentLogin;
     SharedPreferences sPref;
+   boolean usersLoaded;
 
     Button BtnSendFrag;
     Button BtnAddUsers;
@@ -96,7 +98,8 @@ public class MainActivity extends ActionBarActivity {
 
     ProgressDialog pDialog;
     UserListAdapter useLadapter;
-    ArrayList<ArrayList<String>> UsersArrays = new ArrayList<ArrayList<String>>();
+//    ArrayList<ArrayList<String>> UsersArrays = new ArrayList<ArrayList<String>>();
+    ArrayList<UserListModel> UsersArrays = new ArrayList<UserListModel>();
     ArrayList<String> user=new ArrayList<String>(); //авторизованый юзер
     //String[] emailsArr;
 
@@ -146,7 +149,8 @@ public class MainActivity extends ActionBarActivity {
 
           /*  MyFragment myFragmentUsers = new MyFragment("main");
             MyFragment myFragmentLogin = new MyFragment("login");*/
-            MyFragment myFragmentUsers = MyFragment.newInstance("main");
+          //  MyFragment myFragmentUsers = MyFragment.newInstance("main");
+            UsrListFragment myFragmentUsers = new UsrListFragment();
             MyFragment myFragmentLogin = MyFragment.newInstance("login");
             FragmentTransaction ft = supportFragmentManager.beginTransaction();
             //ft.add(R.id.fragment2, frag2);
@@ -155,27 +159,35 @@ public class MainActivity extends ActionBarActivity {
             ft.hide(myFragmentLogin);
             ft.commit();
 
+            usersLoaded=false;
+            this.saveText("usersLoaded");
+
+
         SkipUsers = 0;
 /*
            getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, PlaceholderFragment.newInstance("main").commit());*/
-       }
+       }else {
 
-      //  else{
-            if(supportFragmentManager.findFragmentByTag("main") != null) {
+
+
+            //  else{
+            if (supportFragmentManager.findFragmentByTag("main") != null) {
                 Toast.makeText(this, "onCreate - main not null", Toast.LENGTH_SHORT).show();
-                myFragmentUsers =(MyFragment) supportFragmentManager.findFragmentByTag("main");
+                myFragmentUsers = (UsrListFragment) supportFragmentManager.findFragmentByTag("main");
 
-            }else{
+            } else {
                 Toast.makeText(this, "onCreate - main null", Toast.LENGTH_SHORT).show();
             }
-            if(supportFragmentManager.findFragmentByTag("login") != null) {
+            if (supportFragmentManager.findFragmentByTag("login") != null) {
                 Toast.makeText(this, "onCreate - login not null", Toast.LENGTH_SHORT).show();
                 myFragmentLogin = (MyFragment) supportFragmentManager.findFragmentByTag("login");
-            }else{
+            } else {
                 Toast.makeText(this, "onCreate - login null", Toast.LENGTH_SHORT).show();
             }
+        }
      //   }
+        this.loadText("usersLoaded");
 
         context1 = this;
         BtnSendFrag = (Button) findViewById(R.id.button);
@@ -257,7 +269,7 @@ public class MainActivity extends ActionBarActivity {
     /*public Object onRetainNonConfigurationInstance() {
         return supportFragmentManager;
     }*/
- /*
+/*
     @Override
    public Object onRetainNonConfigurationInstance() {
         return this;
@@ -279,6 +291,11 @@ public class MainActivity extends ActionBarActivity {
                 Toast.makeText(this, "Text saved-"+"user_email "+sPref.getString("user_email", ""), Toast.LENGTH_SHORT).show();
             }
         }
+        if(what =="usersLoaded"){
+                ed.putBoolean("usersLoaded", usersLoaded);
+                ed.commit();
+                Toast.makeText(this, "usersLoaded ", Toast.LENGTH_SHORT).show();
+        }
 
 
     }
@@ -297,6 +314,10 @@ public class MainActivity extends ActionBarActivity {
             }else{
                 Toast.makeText(this, "hhh", Toast.LENGTH_SHORT).show();
             }
+
+        }
+        if(what =="usersLoaded") {
+            usersLoaded = sPref.getBoolean("usersLoaded", false);
         }
     }
 
@@ -310,17 +331,12 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void loadUserList() {
-
+/*
         UsersList = (ListView) findViewById(R.id.listView);
         LayoutInflater layoutInflater = (LayoutInflater) context1.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         // LayoutInflater layoutInflater = inflater.inflate(R.layout.list_users, parent, false);
         // inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-/*
-                final LinearLayout mLoadingFooter;
-                mLoadingFooter = (LinearLayout) layoutInflater.inflate(R.layout.loading_footer,null );
-                mLoadingFooter.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.FILL_PARENT, ListView.LayoutParams.WRAP_CONTENT));
-                UsersList.addFooterView(mLoadingFooter);
- */
+
         //  ((UserListAdapter)((BaseAdapter)((ListView)findViewById(R.id.listView)).getAdapter()))
 
         // mList.addFooterView(mLoadingFooter);
@@ -341,13 +357,14 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
         });
-
+*/
        // loadUserList();
+        /*
         tV = (TextView) findViewById(R.id.tV);
         cnt++;
-        tV.setText("new Text-" + String.valueOf(cnt));
+        tV.setText("new Text-" + String.valueOf(cnt));*/
         try {
-            tV.setText(tV.getText().toString() + " Text ");
+ //           tV.setText(tV.getText().toString() + " Text ");
             //   String searchURL = "http://search.twitter.com/search.json?q=cats";
             //  String searchURL = "http://stackoverflow.com/questions/33059933/package-org-apache-http-client-does-not-exist";
             //String searchURL ="http://192.168.123.168/#/PageUsers/1";
@@ -356,7 +373,7 @@ public class MainActivity extends ActionBarActivity {
             //AsyncTask<String, Void, String> execute = new GetUsersTask().execute(searchURL);
             AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) context1, useLadapter, UsersArrays).execute(searchURL);
         } catch (Exception e) {
-            tV.setText("Whoops - something went wrong!");
+       //     tV.setText("Whoops - something went wrong!");
             e.printStackTrace();
         }
 
@@ -386,7 +403,7 @@ public class MainActivity extends ActionBarActivity {
             //AsyncTask<String, Void, String> execute = new GetUsersTask().execute(searchURL);
             AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) context1,useLadapter,UsersArrays).execute(searchURL);
         } catch (Exception e) {
-            tV.setText("Whoops - something went wrong!");
+         //   tV.setText("Whoops - something went wrong!");
             e.printStackTrace();
         }
 
@@ -410,7 +427,7 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        myFragmentUsers =(MyFragment) supportFragmentManager.findFragmentByTag("main");
+        myFragmentUsers =(UsrListFragment) supportFragmentManager.findFragmentByTag("main");
         myFragmentLogin =(MyFragment) supportFragmentManager.findFragmentByTag("login");
 
     /*    List<Fragment> lfrg= getSupportFragmentManager().getFragments();
@@ -445,8 +462,13 @@ public class MainActivity extends ActionBarActivity {
                    // .hide(fr2)
                   //  .show(fr1)
                     .commit();
+            Toast.makeText(this, "usersLoaded "+String.valueOf(usersLoaded) , Toast.LENGTH_LONG).show();
+            if(!usersLoaded) {
 
-            loadUserList();
+                usersLoaded = true;
+                loadText("usersLoaded");
+                loadUserList();
+            }
             return true;
         }
 

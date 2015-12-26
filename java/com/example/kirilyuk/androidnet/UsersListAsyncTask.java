@@ -34,9 +34,11 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
         String result1;
         public MainActivity context;
        UserListAdapter useLadapter;
-       ArrayList<ArrayList<String>> UsersArrays = new ArrayList<ArrayList<String>>();
+    //   ArrayList<ArrayList<String>> UsersArrays = new ArrayList<ArrayList<String>>();
+    ArrayList<UserListModel> UsersArrays = new ArrayList<UserListModel>();
 
-        public UsersListAsyncTask(MainActivity a,UserListAdapter useLadapter,ArrayList<ArrayList<String>> UsersArrays)
+      //  public UsersListAsyncTask(MainActivity a,UserListAdapter useLadapter,ArrayList<ArrayList<String>> UsersArrays)
+      public UsersListAsyncTask(MainActivity a,UserListAdapter useLadapter,ArrayList<UserListModel> UsersArrays)
         {
             this.context = a;
             this.useLadapter = useLadapter;
@@ -121,10 +123,12 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
                     for (int t = 0; t < tweetArray.length(); t++) {
                         /* 02 12 15*/
                         JSONObject tweetObject = tweetArray.getJSONObject(t);
-                        ArrayList<String> us = new ArrayList<String>();
+            /*            ArrayList<String> us = new ArrayList<String>();
                         us.add(String.valueOf(tweetObject.get("id") + " - " + String.valueOf(tweetObject.get("email"))));
                         us.add(String.valueOf(tweetObject.get("foto")));
                         us.add(String.valueOf(tweetObject.get("foto")));
+              */
+                        UserListModel us = new UserListModel(String.valueOf(tweetObject.get("id"))+String.valueOf(tweetObject.get("email")),String.valueOf(tweetObject.get("foto")),String.valueOf(tweetObject.get("foto")));
                         UsersArrays.add(us);
                     }
                 }else{
@@ -133,14 +137,18 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
                 ListView UsersList1 = (ListView) context.findViewById(R.id.listView);
                 //useLadapter = new UserListAdapter((MainActivity) context, emailsArr, passesArr,fotosArr);
                // useLadapter = new UserListAdapter((MainActivity) context, emails, passes,passes);
-
+/*
             if(context.SkipUsers==0) {//если мы впервые загружаем список
                 useLadapter = new UserListAdapter((MainActivity) context, R.layout.list_users, UsersArrays);
                 //          UsersList1.setAdapter(useLadapter);
                 UsersList1.setAdapter((UserListAdapter) ((BaseAdapter) useLadapter));
             }else{//если добавляем
                 ((UserListAdapter)((BaseAdapter)UsersList1.getAdapter())).notifyDataSetChanged();
+
             }
+*/
+                useLadapter.notifyDataSetChanged();
+
 
             } catch (Exception e) {
                 // tweetDisplay.setText("Whoops - something went wrong!");
