@@ -6,6 +6,7 @@ import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 //import android.support.v4.app.ListFragment;
 
 /**
@@ -15,6 +16,10 @@ public class UsrListFragment extends ListFragment implements AbsListView.OnScrol
    // boolean mDualPane;
     int mCurCheckPosition = 0;
     public UserListAdapter useLadapter;
+  //  ArrayList<UserListModel> UsersArrays;
+    List<UserListModel> UsersArrays;
+    int SkipUsers;//с какого юзера
+
 /*
     public static final UsrListFragment newInstance(String name)
     {
@@ -30,6 +35,11 @@ public class UsrListFragment extends ListFragment implements AbsListView.OnScrol
         return f;
     }
 */
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setRetainInstance(true);
+    }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -40,7 +50,8 @@ public class UsrListFragment extends ListFragment implements AbsListView.OnScrol
         //          UsersList1.setAdapter(useLadapter);
         */
 
-        ArrayList<UserListModel> UsersArrays = ((MainActivity)getActivity()).UsersArrays;
+       UsersArrays = ((MainActivity)getActivity()).UsersArrays;
+        SkipUsers = ((MainActivity)getActivity()).SkipUsers;
        useLadapter = ((MainActivity)getActivity()).useLadapter;
         // Populate list with our static array of titles.
        /*

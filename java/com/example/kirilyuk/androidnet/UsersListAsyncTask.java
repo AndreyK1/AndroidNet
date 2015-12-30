@@ -23,6 +23,7 @@ import java.io.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Kirilyuk on 05.12.2015.
@@ -35,10 +36,11 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
         public MainActivity context;
        UserListAdapter useLadapter;
     //   ArrayList<ArrayList<String>> UsersArrays = new ArrayList<ArrayList<String>>();
-    ArrayList<UserListModel> UsersArrays; // = new ArrayList<UserListModel>();
+    //ArrayList<UserListModel> UsersArrays; // = new ArrayList<UserListModel>();
+    List<UserListModel> UsersArrays; // = new ArrayList<UserListModel>();
 
       //  public UsersListAsyncTask(MainActivity a,UserListAdapter useLadapter,ArrayList<ArrayList<String>> UsersArrays)
-      public UsersListAsyncTask(MainActivity a,UserListAdapter useLadapter,ArrayList<UserListModel> UsersArrays)
+      public UsersListAsyncTask(MainActivity a,UserListAdapter useLadapter, List<UserListModel> UsersArrays)
         {
             this.context = a;
             this.useLadapter = useLadapter;
@@ -133,6 +135,8 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
                         Log.v("My Project UsersArrays.add","UsersArrays.add");
                     }
 
+
+
                 }else{
                     context.usersEnded = true;
                 }
@@ -158,6 +162,10 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
                 //myFragmentUsers.getListView().setSelection(messages.size()-1);
                 //myFragmentUsers.getListView().setNotifyDataChanged();
                       // .invalidateViews();
+
+                context.usersLoaded=true;
+                context.saveText("usersLoaded");
+
 
                 context.supportFragmentManager.beginTransaction()
                         //fragmentTransaction

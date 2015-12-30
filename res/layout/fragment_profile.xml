@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Email:"
+        android:id="@+id/textView4"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="27dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="35dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="pass:"
+        android:id="@+id/textView6"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/textView4"
+        android:layout_alignLeft="@+id/textView4"
+        android:layout_alignStart="@+id/textView4" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="foto:"
+        android:id="@+id/textView5"
+        android:layout_below="@+id/textView6"
+        android:layout_alignLeft="@+id/textView6"
+        android:layout_alignStart="@+id/textView6"
+        android:layout_marginTop="25dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/edEmail"
+        android:layout_above="@+id/textView6"
+        android:layout_toRightOf="@+id/textView4"
+        android:ems="10"
+        android:layout_marginLeft="46dp"
+        android:layout_marginStart="46dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/edPass"
+        android:ems="10"
+        android:layout_above="@+id/textView5"
+        android:layout_alignLeft="@+id/edEmail"
+        android:layout_alignStart="@+id/edEmail" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/edFot"
+        android:ems="10"
+        android:layout_alignBottom="@+id/textView5"
+        android:layout_alignLeft="@+id/edPass"
+        android:layout_alignStart="@+id/edPass" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="get me"
+        android:id="@+id/butProfile"
+        android:layout_below="@+id/edFot"
+        android:layout_alignRight="@+id/edFot"
+        android:layout_alignEnd="@+id/edFot"
+        android:layout_marginTop="48dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageProfile"
+        android:layout_below="@+id/textView5"
+        android:layout_alignLeft="@+id/textView5"
+        android:layout_alignStart="@+id/textView5" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Make foto"
+        android:id="@+id/butMakeFoto"
+        android:layout_centerVertical="true"
+        android:layout_alignRight="@+id/butProfile"
+        android:layout_alignEnd="@+id/butProfile" />
+
+</RelativeLayout>

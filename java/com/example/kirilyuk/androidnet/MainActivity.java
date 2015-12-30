@@ -35,6 +35,7 @@ import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -83,6 +84,7 @@ public class MainActivity extends ActionBarActivity {
    // PlaceholderFragment myFragmentLogin;
     UsrListFragment myFragmentUsers;
     MyFragment myFragmentLogin;
+    ProfileFragment myFragmentProfile;
     SharedPreferences sPref;
    boolean usersLoaded;
 
@@ -99,7 +101,9 @@ public class MainActivity extends ActionBarActivity {
     ProgressDialog pDialog;
     UserListAdapter useLadapter;
 //    ArrayList<ArrayList<String>> UsersArrays = new ArrayList<ArrayList<String>>();
-    ArrayList<UserListModel> UsersArrays = new ArrayList<UserListModel>();
+  //  ArrayList<UserListModel> UsersArrays = new ArrayList<UserListModel>();
+ //   List<UserListModel> UsersArrays = new ArrayList<UserListModel>();
+    List<UserListModel> UsersArrays;
     ArrayList<String> user=new ArrayList<String>(); //авторизованый юзер
     //String[] emailsArr;
 
@@ -111,7 +115,7 @@ public class MainActivity extends ActionBarActivity {
             "Linux", "OS/2" };
 
     int pageSize = 10;//по сколько юзеров загружать
-    int SkipUsers = 0;//с какого юзера
+    int SkipUsers;//с какого юзера
     boolean usersEnded = false; //долистались ли мы до конца юзеров
 
     @Override
@@ -128,6 +132,9 @@ public class MainActivity extends ActionBarActivity {
 
        // if (myFragmentUsers == null) {
         if (savedInstanceState == null) {
+
+            UsersArrays = new ArrayList<UserListModel>();
+            SkipUsers = 0;
 /*
             myFragmentUsers = new PlaceholderFragment();
             myFragmentUsers.FragName = "main";
@@ -151,11 +158,14 @@ public class MainActivity extends ActionBarActivity {
             MyFragment myFragmentLogin = new MyFragment("login");*/
           //  MyFragment myFragmentUsers = MyFragment.newInstance("main");
             UsrListFragment myFragmentUsers = new UsrListFragment();
+            ProfileFragment myFragmentProfile = new ProfileFragment();
+
             MyFragment myFragmentLogin = MyFragment.newInstance("login");
             FragmentTransaction ft = supportFragmentManager.beginTransaction();
             //ft.add(R.id.fragment2, frag2);
             ft.add(R.id.container, myFragmentUsers,"main");
             ft.add(R.id.container, myFragmentLogin,"login");
+            ft.add(R.id.container, myFragmentProfile,"profile");
             ft.hide(myFragmentLogin);
             ft.commit();
 
@@ -163,7 +173,7 @@ public class MainActivity extends ActionBarActivity {
             this.saveText("usersLoaded");
 
 
-        SkipUsers = 0;
+       // SkipUsers = 0;
 /*
            getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, PlaceholderFragment.newInstance("main").commit());*/
@@ -175,6 +185,16 @@ public class MainActivity extends ActionBarActivity {
             if (supportFragmentManager.findFragmentByTag("main") != null) {
                 Toast.makeText(this, "onCreate - main not null", Toast.LENGTH_SHORT).show();
                 myFragmentUsers = (UsrListFragment) supportFragmentManager.findFragmentByTag("main");
+                UsersArrays = myFragmentUsers.UsersArrays;
+                SkipUsers  = myFragmentUsers.SkipUsers;
+                if (UsersArrays == null) {
+
+                    UsersArrays = new ArrayList<UserListModel>();
+                    SkipUsers = 0;
+
+                    myFragmentUsers.UsersArrays = UsersArrays;
+                    myFragmentUsers.SkipUsers = SkipUsers;
+                }
 
             } else {
                 Toast.makeText(this, "onCreate - main null", Toast.LENGTH_SHORT).show();
@@ -185,8 +205,12 @@ public class MainActivity extends ActionBarActivity {
             } else {
                 Toast.makeText(this, "onCreate - login null", Toast.LENGTH_SHORT).show();
             }
+            if (supportFragmentManager.findFragmentByTag("profile") != null) {
+                Toast.makeText(this, "onCreate - profile not null", Toast.LENGTH_SHORT).show();
+                myFragmentProfile = (ProfileFragment) supportFragmentManager.findFragmentByTag("profile");
+            }
         }
-     //   }
+
         this.loadText("usersLoaded");
 
         context1 = this;
@@ -194,13 +218,12 @@ public class MainActivity extends ActionBarActivity {
         BtnAddUsers = (Button)findViewById(R.id.butAddUser);
        // BtnLogin = (Button)findViewById(R.id.btLogin);
 
-
-
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Please wait..");
         pDialog.setIndeterminate(true);
         pDialog.setCancelable(true);
 
+       /*
         BtnSendFrag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -221,32 +244,11 @@ public class MainActivity extends ActionBarActivity {
 
             }
 
-
-
-/*
-            private Bitmap getImageBitmap(String url) {
-                Log.v("Bitmap", "here1");
-                Bitmap bm = null;
-                try {
-                    URL aURL = new URL(url);
-                    URLConnection conn = aURL.openConnection();
-                    conn.connect();
-                    InputStream is = conn.getInputStream();
-                    BufferedInputStream bis = new BufferedInputStream(is);
-                    bm = BitmapFactory.decodeStream(bis);
-                    bis.close();
-                    is.close();
-                } catch (IOException e) {
-                    Log.e("URLConnection", "Error getting bitmap", e);
-                }
-                return bm;
-            }
-            */
         });
-
+*/
 
         this.loadText("user");
-        this.ShowAutorizedUser();
+  //      this.ShowAutorizedUser();
 
 /*
         UsersList.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -263,6 +265,16 @@ public class MainActivity extends ActionBarActivity {
         });
 */
 
+    }
+
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        // Android automatically saves visible fragments here. (?)
+
+        super.onSaveInstanceState(outState);
     }
 
 //сохранение перед поворотом
@@ -294,7 +306,7 @@ public class MainActivity extends ActionBarActivity {
         if(what =="usersLoaded"){
                 ed.putBoolean("usersLoaded", usersLoaded);
                 ed.commit();
-                Toast.makeText(this, "usersLoaded ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "sPref save usersLoaded- "+String.valueOf(usersLoaded), Toast.LENGTH_SHORT).show();
         }
 
 
@@ -318,11 +330,39 @@ public class MainActivity extends ActionBarActivity {
         }
         if(what =="usersLoaded") {
             usersLoaded = sPref.getBoolean("usersLoaded", false);
+            Toast.makeText(this, "sPref load usersLoaded- "+String.valueOf(usersLoaded), Toast.LENGTH_SHORT).show();
         }
     }
 
     public void ShowAutorizedUser() {
         if(user.size()>0){
+            ((EditText) findViewById(R.id.edEmail)).setText(user.get(1));
+            ((EditText) findViewById(R.id.edFot)).setText(user.get(2));
+
+                String str1 = Server+"/foto/"+user.get(2);
+            //получение картинки
+            ImageView ImgProf = (ImageView) findViewById(R.id.imageProfile);
+
+
+            if(user.get(2).equals("null")){
+
+                ImgProf.setImageResource(R.drawable.test);
+                //holder.imgIcon.setImageResource(R.drawable.test);
+                //  img.setImageResource(R.drawable.test);
+            }else {
+                //ImageView profile_photo = (ImageView) findViewById(R.id.imageTest);
+                try {
+                    // URL url = new URL("http://192.168.123.168/img/no.jpg");
+                    URL url = new URL(str1);
+                    AsyncTask<URL, Void, Boolean> asyncTask2 = new GetPictureAsyncTaskN(ImgProf);
+                    // asyncTask1.execute(url);
+                    asyncTask2.execute(url);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
             Toast.makeText(this, "ShowAutorizedUser : " + String.valueOf(user.get(1)), Toast.LENGTH_LONG).show();
         }else{
             Toast.makeText(this, "ShowAutorizedUser : " + "none", Toast.LENGTH_LONG).show();
@@ -331,45 +371,8 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void loadUserList() {
-/*
-        UsersList = (ListView) findViewById(R.id.listView);
-        LayoutInflater layoutInflater = (LayoutInflater) context1.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        // LayoutInflater layoutInflater = inflater.inflate(R.layout.list_users, parent, false);
-        // inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        //  ((UserListAdapter)((BaseAdapter)((ListView)findViewById(R.id.listView)).getAdapter()))
-
-        // mList.addFooterView(mLoadingFooter);
-        //http://habrahabr.ru/post/130319/
-
-
-        UsersList.setOnScrollListener(new AbsListView.OnScrollListener() {
-
-            @Override
-            public void onScrollStateChanged(AbsListView arg0, int arg1) {}
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                //                       UsersList.removeFooterView((LinearLayout) mLoadingFooter);
-                if (visibleItemCount > 0 && firstVisibleItem + visibleItemCount == totalItemCount) {
-
-                    loadNextPageUsers();
-                }
-            }
-        });
-*/
-       // loadUserList();
-        /*
-        tV = (TextView) findViewById(R.id.tV);
-        cnt++;
-        tV.setText("new Text-" + String.valueOf(cnt));*/
         try {
- //           tV.setText(tV.getText().toString() + " Text ");
-            //   String searchURL = "http://search.twitter.com/search.json?q=cats";
-            //  String searchURL = "http://stackoverflow.com/questions/33059933/package-org-apache-http-client-does-not-exist";
-            //String searchURL ="http://192.168.123.168/#/PageUsers/1";
             String searchURL = "http://192.168.123.168/AllUsers/" + SkipUsers + "/" + pageSize;
-
             //AsyncTask<String, Void, String> execute = new GetUsersTask().execute(searchURL);
             AsyncTask<String, Void, Boolean> execute = new UsersListAsyncTask((MainActivity) context1, useLadapter, UsersArrays).execute(searchURL);
         } catch (Exception e) {
@@ -398,6 +401,8 @@ public class MainActivity extends ActionBarActivity {
 
         try {
             SkipUsers = SkipUsers+10;
+            myFragmentUsers.SkipUsers = SkipUsers;
+
             String searchURL = "http://192.168.123.168/AllUsers/" + SkipUsers + "/" + pageSize;
 
             //AsyncTask<String, Void, String> execute = new GetUsersTask().execute(searchURL);
@@ -429,15 +434,7 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
         myFragmentUsers =(UsrListFragment) supportFragmentManager.findFragmentByTag("main");
         myFragmentLogin =(MyFragment) supportFragmentManager.findFragmentByTag("login");
-
-    /*    List<Fragment> lfrg= getSupportFragmentManager().getFragments();
-        Fragment fr1 =  lfrg.get(0);
-        Fragment fr2 =  lfrg.get(1);*/
-       // Fragment fr3 =  lfrg.get(2);
-      /* Toast.makeText(this, "getSupportFragmentManager: fr1 "+((PlaceholderFragment) fr1).FragName+
-                " getSupportFragmentManager: fr2 "+((PlaceholderFragment) fr2).FragName
-              // + "getSupportFragmentManager: fr3 "+((PlaceholderFragment) fr3).FragName
-                , Toast.LENGTH_LONG).show();*/
+        myFragmentProfile = (ProfileFragment) supportFragmentManager.findFragmentByTag("profile");
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
@@ -458,6 +455,7 @@ public class MainActivity extends ActionBarActivity {
                    supportFragmentManager.beginTransaction()
             //fragmentTransaction
                     .hide(myFragmentLogin)
+                    .hide(myFragmentProfile)
                    .show(myFragmentUsers)
                    // .hide(fr2)
                   //  .show(fr1)
@@ -481,6 +479,7 @@ public class MainActivity extends ActionBarActivity {
             supportFragmentManager.beginTransaction()
             //fragmentTransaction
                     .hide(myFragmentUsers)
+                    .hide(myFragmentProfile)
                     .show(myFragmentLogin)
                    // .hide(fr1)
                    // .show(fr2)
@@ -495,6 +494,19 @@ public class MainActivity extends ActionBarActivity {
             return true;
 
         }
+        if (id == R.id.action_profile){
+            supportFragmentManager.beginTransaction()
+                    //fragmentTransaction
+                    .hide(myFragmentUsers)
+                    .hide(myFragmentLogin)
+                    .show(myFragmentProfile)
+                            // .hide(fr1)
+                            // .show(fr2)
+                    .commit();
+            return true;
+
+        }
+       // myFragmentProfile
 
         return super.onOptionsItemSelected(item);
     }

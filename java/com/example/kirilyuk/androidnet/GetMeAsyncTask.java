@@ -125,7 +125,7 @@ public class GetMeAsyncTask  extends AsyncTask<String, Void, Boolean> {
             if(tweetObject.length() >0) {
                 context.user.clear();
                 context.user.add(String.valueOf(tweetObject.get("id")));
-                context.user.add(String.valueOf(tweetObject.get("email"))+"-");
+                context.user.add(String.valueOf(tweetObject.get("email")));
                 context.user.add(String.valueOf(tweetObject.get("foto")));
                 context.user.add(String.valueOf(tweetObject.get("token")));
                 Log.v("My Project context.user",String.valueOf(context.user.get(0)) );

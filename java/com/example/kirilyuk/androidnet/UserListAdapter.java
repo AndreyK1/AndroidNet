@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Kirilyuk on 02.12.2015.
@@ -39,13 +40,14 @@ public class UserListAdapter extends BaseAdapter{// BaseAdapter  ArrayAdapter<Ar
     ArrayList<String> fotos;
 
  //   ArrayList<ArrayList<String>> users;
-    ArrayList<UserListModel> users;
+ //   ArrayList<UserListModel> users;
+    List<UserListModel> users;
 
     Context context;
     int [] imageId;
     private static LayoutInflater inflater=null;
    // public UserListAdapter(MainActivity mainActivity, int resource, ArrayList<ArrayList<String>> AllList) {
-        public UserListAdapter(MainActivity mainActivity, int resource, ArrayList<UserListModel> AllList) {
+        public UserListAdapter(MainActivity mainActivity, int resource,List<UserListModel> AllList) {
       //  super(mainActivity, resource);
         // TODO Auto-generated constructor stub
       /*
@@ -214,11 +216,18 @@ class GetPictureAsyncTaskN  extends AsyncTask<URL, Void, Boolean> {
     public Bitmap mIcon_val;
     public IOException error;
     UserListAdapter.LocationHolder holder;
+    ImageView ImgView;
 
-    public GetPictureAsyncTaskN(UserListAdapter.LocationHolder holder)
+    public GetPictureAsyncTaskN(UserListAdapter.LocationHolder holder)//если мы заполняем лист вью
     {
         this.holder = holder;
        // this.mIcon_val = mIcon_val;
+    }
+
+    public GetPictureAsyncTaskN(ImageView ImgView)//если мы заполняем профайл
+    {
+        this.ImgView = ImgView;
+        // this.mIcon_val = mIcon_val;
     }
 
     @Override
@@ -273,7 +282,12 @@ class GetPictureAsyncTaskN  extends AsyncTask<URL, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         super.onPostExecute(success);
         if (success) {
-            holder.imgIcon.setImageBitmap(mIcon_val);
+            if(holder !=null) {
+                holder.imgIcon.setImageBitmap(mIcon_val);
+            }
+            if(ImgView !=null) {
+                ImgView.setImageBitmap(mIcon_val);
+            }
             //img.setImageBitmap(mIcon_val);
         } else {
             //profile_photo.setImageBitmap(defaultImage);
