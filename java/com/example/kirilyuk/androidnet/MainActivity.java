@@ -85,6 +85,8 @@ public class MainActivity extends ActionBarActivity {
     UsrListFragment myFragmentUsers;
     MyFragment myFragmentLogin;
     ProfileFragment myFragmentProfile;
+    BlueTootshFragment myFragmentBlueToth;
+
     SharedPreferences sPref;
    boolean usersLoaded;
 
@@ -159,6 +161,7 @@ public class MainActivity extends ActionBarActivity {
           //  MyFragment myFragmentUsers = MyFragment.newInstance("main");
             UsrListFragment myFragmentUsers = new UsrListFragment();
             ProfileFragment myFragmentProfile = new ProfileFragment();
+            BlueTootshFragment myFragmentBlueToth = new BlueTootshFragment();
 
             MyFragment myFragmentLogin = MyFragment.newInstance("login");
             FragmentTransaction ft = supportFragmentManager.beginTransaction();
@@ -166,7 +169,9 @@ public class MainActivity extends ActionBarActivity {
             ft.add(R.id.container, myFragmentUsers,"main");
             ft.add(R.id.container, myFragmentLogin,"login");
             ft.add(R.id.container, myFragmentProfile,"profile");
+            ft.add(R.id.container, myFragmentBlueToth,"bluetoth");
             ft.hide(myFragmentLogin);
+            ft.hide(myFragmentProfile);
             ft.commit();
 
             usersLoaded=false;
@@ -208,6 +213,10 @@ public class MainActivity extends ActionBarActivity {
             if (supportFragmentManager.findFragmentByTag("profile") != null) {
                 Toast.makeText(this, "onCreate - profile not null", Toast.LENGTH_SHORT).show();
                 myFragmentProfile = (ProfileFragment) supportFragmentManager.findFragmentByTag("profile");
+            }
+            if (supportFragmentManager.findFragmentByTag("bluetoth") != null) {
+                Toast.makeText(this, "onCreate - bluetoth not null", Toast.LENGTH_SHORT).show();
+                myFragmentBlueToth = (BlueTootshFragment) supportFragmentManager.findFragmentByTag("bluetoth");
             }
         }
 
@@ -435,6 +444,7 @@ public class MainActivity extends ActionBarActivity {
         myFragmentUsers =(UsrListFragment) supportFragmentManager.findFragmentByTag("main");
         myFragmentLogin =(MyFragment) supportFragmentManager.findFragmentByTag("login");
         myFragmentProfile = (ProfileFragment) supportFragmentManager.findFragmentByTag("profile");
+        myFragmentBlueToth = (BlueTootshFragment)  supportFragmentManager.findFragmentByTag("bluetoth");
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
@@ -442,23 +452,12 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         if (id == R.id.action_usersList){
-            /*myFragment = new PlaceholderFragment();
-            myFragment.FragName = "main";
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, myFragment)
-                    .commit();
-*/
-         //   Toast.makeText(this, "menu - action_usersList: "+myFragmentLogin.FragName , Toast.LENGTH_LONG).show();
-
-
            // getSupportFragmentManager().beginTransaction()
                    supportFragmentManager.beginTransaction()
-            //fragmentTransaction
                     .hide(myFragmentLogin)
                     .hide(myFragmentProfile)
+                    .hide(myFragmentBlueToth)
                    .show(myFragmentUsers)
-                   // .hide(fr2)
-                  //  .show(fr1)
                     .commit();
             Toast.makeText(this, "usersLoaded "+String.valueOf(usersLoaded) , Toast.LENGTH_LONG).show();
             if(!usersLoaded) {
@@ -471,40 +470,34 @@ public class MainActivity extends ActionBarActivity {
         }
 
         if (id == R.id.action_login){
-       //    Toast.makeText(this, "menu - action_login: "+myFragmentLogin.FragName , Toast.LENGTH_LONG).show();
-
-
-
             //getSupportFragmentManager().beginTransaction()
             supportFragmentManager.beginTransaction()
             //fragmentTransaction
                     .hide(myFragmentUsers)
                     .hide(myFragmentProfile)
+                    .hide(myFragmentBlueToth)
                     .show(myFragmentLogin)
-                   // .hide(fr1)
-                   // .show(fr2)
                     .commit();
-            /*
-            myFragment = new PlaceholderFragment();
-            myFragment.FragName = "login";
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, myFragment)
-                        .commit();
-                        */
             return true;
 
         }
         if (id == R.id.action_profile){
             supportFragmentManager.beginTransaction()
-                    //fragmentTransaction
                     .hide(myFragmentUsers)
                     .hide(myFragmentLogin)
+                    .hide(myFragmentBlueToth)
                     .show(myFragmentProfile)
-                            // .hide(fr1)
-                            // .show(fr2)
                     .commit();
             return true;
-
+        }
+        if (id == R.id.action_bluetooth){
+            supportFragmentManager.beginTransaction()
+                    .hide(myFragmentUsers)
+                    .hide(myFragmentLogin)
+                    .hide(myFragmentProfile)
+                    .show(myFragmentBlueToth)
+                    .commit();
+            return true;
         }
        // myFragmentProfile
 

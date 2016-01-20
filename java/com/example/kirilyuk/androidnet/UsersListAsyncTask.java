@@ -80,8 +80,7 @@ public class UsersListAsyncTask extends AsyncTask<String, Void, Boolean> {
                 wr.flush();
                 wr.close();
 
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

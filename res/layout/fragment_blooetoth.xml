@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="bluetosh nananama"
+        android:id="@+id/texBluetoothstate"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="18dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Включить Bluetoth"
+        android:id="@+id/butBluetoth"
+        android:layout_below="@+id/texBluetoothstate"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="19dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="поиск устройств"
+        android:id="@+id/butSearchNeibor"
+        android:layout_below="@+id/butBluetoth"
+        android:layout_alignLeft="@+id/butBluetoth"
+        android:layout_alignStart="@+id/butBluetoth" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Media rec"
+        android:id="@+id/texMediaRec"
+        android:layout_below="@+id/butSearchNeibor"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="24dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start rec"
+        android:id="@+id/butMediaRec"
+        android:layout_below="@+id/texMediaRec"
+        android:layout_toRightOf="@+id/texBluetoothstate"
+        android:layout_toEndOf="@+id/texBluetoothstate" />
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop rec"
+        android:id="@+id/butMediaRecS"
+        android:layout_below="@+id/butMediaRec"
+        android:layout_alignLeft="@+id/butMediaRec"
+        android:layout_alignStart="@+id/butMediaRec" />
+
+</RelativeLayout>

@@ -1,48 +1,67 @@
 package com.example.kirilyuk.androidnet;
 
 import android.app.Dialog;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Created by Kirilyuk on 15.12.2015.
+ * Created by Kirilyuk on 11.01.2016.
  */
-public class GetMeAsyncTask  extends AsyncTask<String, Void, Boolean> {
+public class HttpFileUploader  extends AsyncTask<String, Void, Boolean> {
 
     String charset = "UTF-8";
     Dialog loadingDialog;
     String result1;
     public MainActivity context;
+    String filepath;
 
 
-    public GetMeAsyncTask(MainActivity a)
+    public HttpFileUploader(MainActivity a, String filepath)
     {
+
         this.context = a;
+        this.filepath=filepath;
     }
 
     @Override
     protected void onPreExecute() {
-        context.pDialog.show();
+
+        //context.pDialog.show();
     }
 
     @Override
     protected Boolean doInBackground(String... sURL) {
+
+
+
+        try {
+            // Set your file path here
+            FileInputStream fstrm = new FileInputStream(filepath);
+            Log.v("My project file.getAbsolutePath()", filepath);
+
+            // Set your server page url (and the file title/description)
+            HttpFileUpload hfu = new HttpFileUpload(context, sURL[0], "my file title",context.user.get(0));
+
+            hfu.Send_Now(fstrm);
+
+        } catch (FileNotFoundException e) {
+
+            // Error: File not found
+        }
+    /*
         StringBuilder sbParams = new StringBuilder();
         URL urlObj = null;
         HttpURLConnection conn = null;
@@ -64,17 +83,6 @@ public class GetMeAsyncTask  extends AsyncTask<String, Void, Boolean> {
             conn.setReadTimeout(10000);
             conn.setConnectTimeout(15000);
             conn.connect();
-/*
-                int code = conn.getResponseCode();
-                Log.v("My Project conn.error",String.valueOf(code) );
-                String paramsString = sbParams.toString();
-
-                DataOutputStream wr;
-                wr = new DataOutputStream(conn.getOutputStream());
-                wr.writeBytes(paramsString);
-                wr.flush();
-                wr.close();
- */
 
 
             int responseCode = conn.getResponseCode();
@@ -108,6 +116,8 @@ public class GetMeAsyncTask  extends AsyncTask<String, Void, Boolean> {
         conn.disconnect();
 
         result1 = result.toString();
+
+        */
         return true;
     }
 
@@ -116,6 +126,7 @@ public class GetMeAsyncTask  extends AsyncTask<String, Void, Boolean> {
         if (!success) {
             return;
         }
+       /*
         Log.v("My Project onPostExecute.result",String.valueOf(result1) );
         StringBuilder tweetResultBuilder = new StringBuilder();
         try {
@@ -130,56 +141,19 @@ public class GetMeAsyncTask  extends AsyncTask<String, Void, Boolean> {
                 context.user.add(String.valueOf(tweetObject.get("foto")));
                 context.user.add(String.valueOf(tweetObject.get("token")));
                 Log.v("My Project context.user",String.valueOf(context.user.get(0)) );
-                /*for (int t = 0; t < tweetArray.length(); t++) {
 
-                    JSONObject tweetObject = tweetArray.getJSONObject(t);
-                    //ArrayList<String> us = new ArrayList<String>();
-                    context.user.add(String.valueOf(tweetObject.get("id")));
-                    context.user.add(String.valueOf(tweetObject.get("email")));
-                    context.user.add(String.valueOf(tweetObject.get("foto")));
-                    Log.v("My Project context.user",String.valueOf(context.user.get(0)) );
-                    //us.add(String.valueOf(tweetObject.get("foto")));
-                    //us.add(String.valueOf(tweetObject.get("foto")));
-                    //UsersArrays.add(us);
-                }*/
             }else{
                 context.usersEnded = true;
             }
 
-         /*
-            if(tweetArray.length() >0) {
-                for (int t = 0; t < tweetArray.length(); t++) {
 
-                    JSONObject tweetObject = tweetArray.getJSONObject(t);
-                    ArrayList<String> us = new ArrayList<String>();
-                    us.add(String.valueOf(tweetObject.get("id") + " - " + String.valueOf(tweetObject.get("email"))));
-                    us.add(String.valueOf(tweetObject.get("foto")));
-                    us.add(String.valueOf(tweetObject.get("foto")));
-                    UsersArrays.add(us);
-                }
-            }else{
-                context.usersEnded = true;
-            }
-    */
-     /*
-            ListView UsersList1 = (ListView) context.findViewById(R.id.listView);
-            //useLadapter = new UserListAdapter((MainActivity) context, emailsArr, passesArr,fotosArr);
-            // useLadapter = new UserListAdapter((MainActivity) context, emails, passes,passes);
-
-            if(context.SkipUsers==0) {//если мы впервые загружаем список
-                useLadapter = new UserListAdapter((MainActivity) context, R.layout.list_users, UsersArrays);
-                //          UsersList1.setAdapter(useLadapter);
-                UsersList1.setAdapter((UserListAdapter) ((BaseAdapter) useLadapter));
-            }else{//если добавляем
-                ((UserListAdapter)((BaseAdapter)UsersList1.getAdapter())).notifyDataSetChanged();
-            }
-*/
         } catch (Exception e) {
             // tweetDisplay.setText("Whoops - something went wrong!");
             e.printStackTrace();
         }
         context.ShowAutorizedUser();
         context.pDialog.dismiss();
+        */
     }
 
 }

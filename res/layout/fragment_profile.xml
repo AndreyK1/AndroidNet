@@ -94,4 +94,13 @@
         android:layout_alignRight="@+id/butProfile"
         android:layout_alignEnd="@+id/butProfile" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Foto"
+        android:id="@+id/butSaveFoto"
+        android:layout_below="@+id/butMakeFoto"
+        android:layout_alignLeft="@+id/butMakeFoto"
+        android:layout_alignStart="@+id/butMakeFoto" />
+
 </RelativeLayout>
